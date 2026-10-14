@@ -5,7 +5,9 @@ CONFIG -= qt
 
 SOURCES += \
         fecha.cpp \
-        main.cpp
+        main.cpp \
+        mensaje.cpp
 
 HEADERS += \
-    fecha.h
+    fecha.h \
+    mensaje.h
