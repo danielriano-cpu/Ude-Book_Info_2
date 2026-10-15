@@ -1,4 +1,5 @@
 #include <iostream>
+#include "foto.h"
 
 using namespace std;
 
