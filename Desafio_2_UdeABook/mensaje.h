@@ -26,9 +26,9 @@ public:
 
     Usuario* getEmisor() const;
     Usuario* getReceptor()const;
-    char* getContenido()const;
+    const char* getContenido()const;
     bool getVisto()const;
-    Fecha geFechaenvio()const;
+    const Fecha& getFechaenvio()const;
 
     /*
     No se ponen setters, pues mensaje es una clase inmutable,
@@ -37,8 +37,19 @@ public:
     */
 
     //metodos
+
     void marcarComoVisto();
     static bool textoValido(const char* texto);   // validamos que sea no vacío y máximo 512 caracteres
+    Mensaje& operator=(const Mensaje& otro);
+    bool operator<(const Mensaje& otro) const;  //se usa para ordenar los mensajes por fecha de envío
+    bool estaEnRango(const Fecha& inicio, const Fecha& fin) const;  //validamos interna para verificar que un mensaje está en rango
+
+private:
+
+    //métodos auxiliares para manejar texto
+    static int longitudTexto(const char* texto);
+    static char* copiarTexto(const char* origen);
+
 };
 
 #endif // MENSAJE_H
