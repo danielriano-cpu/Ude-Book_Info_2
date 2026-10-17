@@ -1,55 +1,68 @@
 #include "album.h"
 #include <string>
 using namespace std;
-//Constructor
 
-Album::Album (string titulo, short estadoPrivacidad){
+Album::Album(const string& titulo, const string& ruta, short estadoPrivacidad) {
     nombre = titulo;
+    rutaAlmacenamiento = ruta;
     privacidad = estadoPrivacidad;
     capacidad = 10;
     fotosGuardadas = 0;
     almacen = new Foto*[capacidad];
-
 }
-//Metodo
-Foto* Album::agregarFoto(Foto foto){
-    if(fotosGuardadas == capacidad){
-        capacidad = capacidad*2;
+
+Foto* Album::agregarFoto(const Foto& foto) {
+    if (fotosGuardadas == capacidad) {
+        capacidad = capacidad * 2;
         Foto** almacenTemp = new Foto*[capacidad];
-        for(unsigned short i = 0; i<fotosGuardadas; i++){
+        for (unsigned short i = 0; i < fotosGuardadas; i++) {
             almacenTemp[i] = almacen[i];
         }
         delete[] almacen;
-        almacen = new Foto*[capacidad];
-        almacen = almacenTemp;
+        almacen = almacenTemp; // Corregido: asignación directa sin instanciar doble memoria
     }
+
+
     almacen[fotosGuardadas] = new Foto(foto);
     fotosGuardadas++;
     return almacen[fotosGuardadas - 1];
 }
-//Destructor
+
 Album::~Album() {
-    //Destruimos cada foto individualmente
     for (unsigned int i = 0; i < fotosGuardadas; i++) {
         delete almacen[i];
     }
-
-    //Destruimos el almacen principal que ya quedó vacía
     delete[] almacen;
 }
-//getters y setters
-string Album::getNombre() {
+
+string Album::getNombre() const {
     return nombre;
 }
 
-void Album::setNombre(string nuevoNombre) {
+void Album::setNombre(const string& nuevoNombre) {
     nombre = nuevoNombre;
 }
 
-int Album::getPrivacidad() {
+string Album::getRutaAlmacenamiento() const {
+    return rutaAlmacenamiento;
+}
+
+void Album::setRutaAlmacenamiento(const string& nuevaRuta) {
+    rutaAlmacenamiento = nuevaRuta;
+}
+
+int Album::getPrivacidad() const {
     return privacidad;
 }
 
 void Album::setPrivacidad(short nuevaPrivacidad) {
     privacidad = nuevaPrivacidad;
+}
+
+unsigned short Album::getFotosGuardadas() const {
+    return fotosGuardadas;
+}
+
+Foto** Album::getAlmacen() const {
+    return almacen;
 }
