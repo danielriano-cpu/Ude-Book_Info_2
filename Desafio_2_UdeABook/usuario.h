@@ -52,11 +52,9 @@ public:
             const string& foto, const string& clave, const string& city,
             const string& country, const Fecha& insc);
 
-
     // Inhabilitamos la copia y asignación para evitar punteros duplicados en memoria
     Usuario(const Usuario& otro) = delete;
     Usuario& operator=(const Usuario& otro) = delete;
-
 
 
     ~Usuario(); //Destructor
