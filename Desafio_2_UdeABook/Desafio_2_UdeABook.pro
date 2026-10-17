@@ -9,11 +9,13 @@ SOURCES += \
         foto.cpp \
         main.cpp \
         medidorrecursos.cpp \
-        mensaje.cpp
+        mensaje.cpp \
+        usuario.cpp
 
 HEADERS += \
     album.h \
     fecha.h \
     foto.h \
     medidorrecursos.h \
-    mensaje.h
+    mensaje.h \
+    usuario.h
