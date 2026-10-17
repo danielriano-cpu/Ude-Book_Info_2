@@ -11,15 +11,18 @@ private:
     //Atributos
     string rutaArchivo;
     Fecha fechaPublicacion;
+    unsigned int tamanioBytes;
     int likes;
 public:
     //Constructor
-    Foto(string ruta, Fecha fecha);
+    Foto(const string& ruta, const Fecha& fecha, unsigned int tamanio = 0);
     //Metodo
     void sumarLikes();
     //Getters
     int getLikes() const;
     string getRutaArchivo() const;
+    Fecha getFechaPublicacion() const;
+    unsigned int getTamanioBytes() const;
 };
 
 #endif // FOTO_H
