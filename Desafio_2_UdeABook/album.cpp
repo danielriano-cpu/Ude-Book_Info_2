@@ -19,7 +19,7 @@ Foto* Album::agregarFoto(const Foto& foto) {
             almacenTemp[i] = almacen[i];
         }
         delete[] almacen;
-        almacen = almacenTemp; // Corregido: asignación directa sin instanciar doble memoria
+        almacen = almacenTemp;
     }
 
 

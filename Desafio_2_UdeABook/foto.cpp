@@ -1,6 +1,6 @@
 #include "foto.h"
 //Constructor en donde se asignan los valores ingresados a los atributos
-Foto::Foto(string ruta, Fecha fecha):rutaArchivo(ruta), fechaPublicacion(fecha), likes(0) {
+Foto::Foto(const string& ruta, const Fecha& fecha, unsigned int tamanio):rutaArchivo(ruta), fechaPublicacion(fecha), tamanioBytes(tamanio), likes(0) {
 }
 //Metodo sumar likes
 void Foto::sumarLikes(){
@@ -13,4 +13,11 @@ int Foto::getLikes()const{
 
 string Foto::getRutaArchivo()const{
     return rutaArchivo;
+}
+Fecha Foto::getFechaPublicacion() const{
+    return fechaPublicacion;
+}
+
+unsigned int Foto::getTamanioBytes() const{
+    return tamanioBytes;
 }
