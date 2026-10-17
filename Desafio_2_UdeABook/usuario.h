@@ -7,6 +7,18 @@
 using namespace std;
 class Mensaje;
 class Album;
+
+// Plantilla para redimensionar cualquier arreglo de punteros
+template <typename T>
+void redimensionarArreglo(T**& arreglo, unsigned int& capacidad, unsigned int cantidad) {
+    capacidad *= 2;
+    T** temp = new T*[capacidad];
+    for (unsigned int i = 0; i < cantidad; i++) {
+        temp[i] = arreglo[i];
+    }
+    delete[] arreglo;
+    arreglo = temp;
+}
 class Usuario
 {
 private:
@@ -19,7 +31,7 @@ private:
     string pais;
     Fecha fechaInscripcion;
 
-    Usuario** Amigos;
+    Usuario** amigos;
     unsigned int cantidadAmigos, capacidadAmigos;
 
     Usuario** solicitudesAmistad;
@@ -52,12 +64,18 @@ public:
 
     void recibirSolicitud(Usuario* solicitante);
 
+    void enviarSolicitud(Usuario* destinatario);
+
     //Getters
     string getNombreUsuario() const;
     string getContrasenia() const;
     string getFotoPerfil() const;
     unsigned int getCantidadAmigos() const;
     Usuario** getAmigos() const;
+    unsigned int getCantidadAlbumes() const;
+    Album** getAlbumes() const;
+    unsigned int getCantidadSolicitudes() const;
+    Usuario** getSolicitudesAmistad() const;
 };
 
 #endif // USUARIO_H

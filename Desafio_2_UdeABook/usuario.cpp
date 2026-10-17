@@ -17,7 +17,7 @@ Usuario::Usuario(const string& nombre, const Fecha& nacimiento, const string& co
     // Inicialización del arreglo de Amigos
     cantidadAmigos = 0;
     capacidadAmigos = 10;
-    Amigos = new Usuario*[capacidadAmigos];
+    amigos = new Usuario*[capacidadAmigos];
 
     // Inicialización del arreglo de Solicitudes
     cantidadSolicitudes = 0;
@@ -38,8 +38,101 @@ Usuario::Usuario(const string& nombre, const Fecha& nacimiento, const string& co
     cantidadAlbumes = 0;
     capacidadAlbumes = 10;
     albumes = new Album*[capacidadAlbumes];
-
 }
+
+//Metodos de interaccion entre objetos
+    void Usuario::agregarAmigo(Usuario* nuevoAmigo){
+            if (cantidadAmigos == capacidadAmigos)
+            {
+                //Usamos la plantilla para redimensionar en una sola linea
+                redimensionarArreglo(amigos, capacidadAmigos, cantidadAmigos);
+            }
+            amigos[cantidadAmigos] = nuevoAmigo;
+            cantidadAmigos++;
+    }
+
+    void Usuario::agregarAlbum(Album* nuevoAlbum){
+        if (cantidadAlbumes == capacidadAlbumes)
+        {
+            //Usamos la plantilla para redimensionar en una sola linea
+            redimensionarArreglo(albumes, capacidadAlbumes, cantidadAlbumes);
+        }
+        albumes[cantidadAlbumes] = nuevoAlbum;
+        cantidadAlbumes++;
+    }
+
+    void Usuario::enviarMensaje(Mensaje* nuevoMensaje){
+        if (cantidadMensajesEnviados == capacidadMensajesEnviados) {
+            //Usamos la plantilla para redimensionar en una sola linea
+            redimensionarArreglo(mensajesEnviados, capacidadMensajesEnviados, cantidadMensajesEnviados);
+        }
+        mensajesEnviados[cantidadMensajesEnviados] = nuevoMensaje;
+        cantidadMensajesEnviados++;
+    }
+
+    void Usuario::recibirMensaje(Mensaje* nuevoMensaje){
+        if (cantidadMensajesRecibidos == capacidadMensajesRecibidos) {
+            //Usamos la plantilla para redimensionar en una sola linea
+            redimensionarArreglo(mensajesRecibidos, capacidadMensajesRecibidos, cantidadMensajesRecibidos);
+        }
+        mensajesRecibidos[cantidadMensajesRecibidos] = nuevoMensaje;
+        cantidadMensajesRecibidos++;
+    }
+
+    void Usuario::recibirSolicitud(Usuario* solicitante) {
+        if (cantidadSolicitudes == capacidadSolicitudes)
+        {
+            redimensionarArreglo(solicitudesAmistad, capacidadSolicitudes, cantidadSolicitudes);
+        }
+        solicitudesAmistad[cantidadSolicitudes] = solicitante;
+        cantidadSolicitudes++;
+    }
+
+    void Usuario::enviarSolicitud(Usuario* destinatario) {
+        if (destinatario != nullptr) {
+            destinatario->recibirSolicitud(this);
+        }
+    }
+
+    //Getters
+
+    string Usuario::getNombreUsuario() const {
+        return nombreUsuario;
+    }
+
+    string Usuario::getContrasenia() const {
+        return contrasenia;
+    }
+
+    string Usuario::getFotoPerfil() const {
+        return fotoPerfil;
+    }
+
+
+    unsigned int Usuario::getCantidadAmigos() const {
+        return cantidadAmigos;
+    }
+
+    Usuario** Usuario::getAmigos() const {
+        return amigos;
+    }
+
+    unsigned int Usuario::getCantidadAlbumes() const {
+        return cantidadAlbumes;
+    }
+
+    Album** Usuario::getAlbumes() const {
+        return albumes;
+    }
+
+    unsigned int Usuario::getCantidadSolicitudes() const {
+        return cantidadSolicitudes;
+    }
+
+    Usuario** Usuario::getSolicitudesAmistad() const {
+        return solicitudesAmistad;
+    }
+
 
 Usuario::~Usuario(){
     // Destruimos los objetos Álbumes porque le pertenecen al Usuario
@@ -47,7 +140,7 @@ Usuario::~Usuario(){
         delete albumes[i];
     }
     // Liberamos los 5 arreglos contenedores que pedimos con 'new[]' en el constructor
-    delete[] Amigos;
+    delete[] amigos;
     delete[] solicitudesAmistad;
     delete[] mensajesEnviados;
     delete[] mensajesRecibidos;
