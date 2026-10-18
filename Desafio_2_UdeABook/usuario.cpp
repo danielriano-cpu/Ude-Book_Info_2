@@ -18,26 +18,31 @@ Usuario::Usuario(const string& nombre, const Fecha& nacimiento, const string& co
     cantidadAmigos = 0;
     capacidadAmigos = 10;
     amigos = new Usuario*[capacidadAmigos];
+    MedidorRecursos::sumarMemoria(capacidadAmigos * sizeof(Usuario*));
 
     // Inicialización del arreglo de Solicitudes
     cantidadSolicitudes = 0;
     capacidadSolicitudes = 10;
     solicitudesAmistad = new Usuario*[capacidadSolicitudes];
+    MedidorRecursos::sumarMemoria(capacidadSolicitudes * sizeof(Usuario*));
 
     // Inicialización de Mensajes Enviados
     cantidadMensajesEnviados = 0;
     capacidadMensajesEnviados = 10;
     mensajesEnviados = new Mensaje*[capacidadMensajesEnviados];
+    MedidorRecursos::sumarMemoria(capacidadMensajesEnviados * sizeof(Mensaje*));
 
     // Inicialización de Mensajes Recibidos
     cantidadMensajesRecibidos = 0;
     capacidadMensajesRecibidos = 10;
     mensajesRecibidos = new Mensaje*[capacidadMensajesRecibidos];
+    MedidorRecursos::sumarMemoria(capacidadMensajesRecibidos * sizeof(Mensaje*));
 
     // Inicialización de Álbumes
     cantidadAlbumes = 0;
     capacidadAlbumes = 10;
     albumes = new Album*[capacidadAlbumes];
+    MedidorRecursos::sumarMemoria(capacidadAlbumes * sizeof(Album*));
 }
 
 //Metodos de interaccion entre objetos
@@ -152,12 +157,20 @@ Usuario::Usuario(const string& nombre, const Fecha& nacimiento, const string& co
 Usuario::~Usuario(){
     // Destruimos los objetos Álbumes porque le pertenecen al Usuario
     for (unsigned int i = 0; i < cantidadAlbumes ; i++) {
+        MedidorRecursos::restarMemoria(sizeof(Album));
         delete albumes[i];
+        MedidorRecursos::contar();
     }
-    // Liberamos los 5 arreglos contenedores que pedimos con 'new[]' en el constructor
+
+    // Liberamos los 5 arreglos (con la capacidad actual, por si crecieron)
+    MedidorRecursos::restarMemoria(capacidadAmigos * sizeof(Usuario*));
     delete[] amigos;
+    MedidorRecursos::restarMemoria(capacidadSolicitudes * sizeof(Usuario*));
     delete[] solicitudesAmistad;
+    MedidorRecursos::restarMemoria(capacidadMensajesEnviados * sizeof(Mensaje*));
     delete[] mensajesEnviados;
+    MedidorRecursos::restarMemoria(capacidadMensajesRecibidos * sizeof(Mensaje*));
     delete[] mensajesRecibidos;
+    MedidorRecursos::restarMemoria(capacidadAlbumes * sizeof(Album*));
     delete[] albumes;
 }

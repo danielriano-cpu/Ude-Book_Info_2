@@ -2,7 +2,7 @@
 #define USUARIO_H
 #include <string>
 #include "fecha.h"
-
+#include "medidorrecursos.h"
 
 using namespace std;
 class Mensaje;
@@ -11,13 +11,17 @@ class Album;
 // Plantilla para redimensionar cualquier arreglo de punteros
 template <typename T>
 void redimensionarArreglo(T**& arreglo, unsigned int& capacidad, unsigned int cantidad) {
-    capacidad *= 2;
-    T** temp = new T*[capacidad];
+    unsigned int nuevaCapacidad = capacidad * 2;
+    T** temp = new T*[nuevaCapacidad];
+    MedidorRecursos::sumarMemoria(nuevaCapacidad * sizeof(T*));
     for (unsigned int i = 0; i < cantidad; i++) {
         temp[i] = arreglo[i];
+        MedidorRecursos::contar();
     }
+    MedidorRecursos::restarMemoria(capacidad * sizeof(T*));
     delete[] arreglo;
     arreglo = temp;
+    capacidad = nuevaCapacidad;
 }
 class Usuario
 {
