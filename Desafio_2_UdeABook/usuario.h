@@ -78,10 +78,27 @@ public:
 
     void eliminarSolicitud(Usuario* solicitante);
 
+    bool esAmigo(Usuario* otro) const;
+
+    bool tieneSolicitudDe(Usuario* otro) const;
+
+    int amigosEnComun(Usuario* otro) const;
+
+    bool aceptarSolicitud(Usuario* solicitante);
+
     //Getters
     string getNombreUsuario() const;
     string getContrasenia() const;
     string getFotoPerfil() const;
+    string getEmail() const;
+    string getCiudad() const;
+    string getPais() const;
+    const Fecha& getFechaNacimiento() const;
+    const Fecha& getFechaInscripcion() const;
+    Mensaje** getMensajesRecibidos() const;
+    unsigned int getCantidadMensajesRecibidos() const;
+    Mensaje** getMensajesEnviados() const;
+    unsigned int getCantidadMensajesEnviados() const;
     unsigned int getCantidadAmigos() const;
     Usuario** getAmigos() const;
     unsigned int getCantidadAlbumes() const;
