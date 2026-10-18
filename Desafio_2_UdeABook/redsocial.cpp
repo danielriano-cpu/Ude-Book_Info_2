@@ -83,6 +83,10 @@ int RedSocial::getCantidadUsuarios() const {
     return usuarios.getCantidad();
 }
 
+int RedSocial::getCantidadMensajes() const {
+    return mensajes.getCantidad();
+}
+
 // ---------- Auxiliares para la carga ----------
 
 // Parte una línea por ';' y guarda cada pedazo en partes[].
@@ -144,6 +148,7 @@ bool RedSocial::cargarDatos(const string& carpeta) {
     if (!cargarSolicitudes(carpeta + "solicitudes.txt")) return false;
     if (!cargarAlbumes(carpeta + "albumes.txt")) return false;
     if (!cargarFotos(carpeta + "fotos.txt")) return false;
+    if (!cargarMensajes(carpeta + "mensajes.txt")) return false;
     return true;
 }
 
@@ -280,4 +285,36 @@ Album* RedSocial::buscarAlbum(Usuario* dueno, const string& nombreAlbum) {
         }
     }
     return nullptr;
+}
+
+// Formato de cada línea: emisor;receptor;dd/mm/aaaa hh:mm;visto(0/1);texto
+// El texto va de último para que pueda contener ';' (partirLinea no lo corta).
+// RedSocial es la dueña del mensaje; emisor y receptor solo guardan el puntero.
+bool RedSocial::cargarMensajes(const string& ruta) {
+    ifstream archivo(ruta);
+    if (!archivo.is_open()) {
+        cout << "No se pudo abrir " << ruta << endl;
+        return false;
+    }
+    string linea;
+    string partes[5];
+    while (getline(archivo, linea)) {
+        MedidorRecursos::contar();
+        if (partirLinea(linea, partes, 5) < 5) continue;
+        Usuario* emisor = buscarUsuario(partes[0]);
+        Usuario* receptor = buscarUsuario(partes[1]);
+        if (emisor == nullptr || receptor == nullptr) continue;
+        if (!Mensaje::textoValido(partes[4].c_str())) continue;   // vacío o de más de 512 caracteres
+
+        Mensaje* m = new Mensaje(emisor, receptor, partes[4].c_str(), textoAFecha(partes[2]));
+        MedidorRecursos::sumarMemoria(sizeof(Mensaje));
+        if (partes[3] == "1") {
+            m->marcarComoVisto();
+        }
+        agregarMensaje(m);
+        emisor->enviarMensaje(m);
+        receptor->recibirMensaje(m);
+    }
+    archivo.close();
+    return true;
 }

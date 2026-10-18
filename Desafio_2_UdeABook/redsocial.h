@@ -27,6 +27,8 @@ private:
     bool cargarAlbumes(const string& ruta);
     bool cargarFotos(const string& ruta);
 
+    bool cargarMensajes(const string& ruta);
+
     // Busca un álbum por nombre dentro de los álbumes de un usuario
     static Album* buscarAlbum(Usuario* dueno, const string& nombreAlbum);
 
@@ -45,6 +47,7 @@ public:
     Usuario* buscarUsuario(const string& nombre) const;
     void agregarMensaje(Mensaje* m);
     int getCantidadUsuarios() const;
+    int getCantidadMensajes() const;
 
     // Carga todos los .txt de la carpeta indicada (ej: "datos/")
     bool cargarDatos(const string& carpeta);

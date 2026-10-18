@@ -27,5 +27,6 @@ DISTFILES += \
     datos/albumes.txt \
     datos/amistades.txt \
     datos/fotos.txt \
+    datos/mensajes.txt \
     datos/solicitudes.txt \
     datos/usuarios.txt
