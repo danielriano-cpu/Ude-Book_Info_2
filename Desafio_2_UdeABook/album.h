@@ -1,6 +1,7 @@
 #ifndef ALBUM_H
 #define ALBUM_H
 #include "foto.h"
+#include "lista.h"
 #include <string>
 
 class Album
@@ -9,12 +10,14 @@ private:
     string nombre;
     string rutaAlmacenamiento;
     short privacidad;
-    Foto** almacen;
-    unsigned short fotosGuardadas;
-    unsigned short capacidad;
+    Lista<Foto*> fotos;     // fotos del álbum (el arreglo dinámico lo maneja Lista)
 
 public:
     Album(const string& titulo, const string& ruta, short estadoPrivacidad);    //Constructor
+
+    // Se prohíbe copiar álbumes
+    Album(const Album&) = delete;
+    Album& operator=(const Album&) = delete;
 
     Foto* agregarFoto(const Foto& foto);             //Metodo
 
@@ -30,7 +33,7 @@ public:
 
     unsigned short getFotosGuardadas() const;
 
-    Foto** getAlmacen() const;
+    const Lista<Foto*>& getFotos() const;
 
     //Desctructor
     ~Album();
