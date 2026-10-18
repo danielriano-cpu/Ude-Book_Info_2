@@ -16,6 +16,7 @@ HEADERS += \
     album.h \
     fecha.h \
     foto.h \
+    lista.h \
     medidorrecursos.h \
     mensaje.h \
     usuario.h
