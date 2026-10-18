@@ -1,0 +1,4 @@
+luis;Cartagena 2025;fotos/luis/cartagena/playa.jpg;12/01/2025;204800;15
+luis;Cartagena 2025;fotos/luis/cartagena/murallas.jpg;13/01/2025;180000;8
+luis;Familia;fotos/luis/familia/navidad.jpg;24/12/2024;250000;30
+luis;Diario;fotos/luis/diario/secreto.jpg;01/02/2025;90000;0

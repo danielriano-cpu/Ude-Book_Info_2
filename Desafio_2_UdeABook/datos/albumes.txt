@@ -1,0 +1,3 @@
+luis;Cartagena 2025;fotos/luis/cartagena;2
+luis;Familia;fotos/luis/familia;1
+luis;Diario;fotos/luis/diario;0

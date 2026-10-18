@@ -4,6 +4,7 @@
 #include "lista.h"
 #include "usuario.h"
 #include "mensaje.h"
+#include "album.h"
 using namespace std;
 
 class RedSocial
@@ -22,6 +23,12 @@ private:
 
     bool cargarAmistades(const string& ruta);
     bool cargarSolicitudes(const string& ruta);
+
+    bool cargarAlbumes(const string& ruta);
+    bool cargarFotos(const string& ruta);
+
+    // Busca un álbum por nombre dentro de los álbumes de un usuario
+    static Album* buscarAlbum(Usuario* dueno, const string& nombreAlbum);
 
 public:
 

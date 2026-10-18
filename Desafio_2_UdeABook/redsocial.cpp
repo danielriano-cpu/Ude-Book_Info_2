@@ -142,6 +142,8 @@ bool RedSocial::cargarDatos(const string& carpeta) {
     if (!cargarUsuarios(carpeta + "usuarios.txt")) return false;
     if (!cargarAmistades(carpeta + "amistades.txt")) return false;
     if (!cargarSolicitudes(carpeta + "solicitudes.txt")) return false;
+    if (!cargarAlbumes(carpeta + "albumes.txt")) return false;
+    if (!cargarFotos(carpeta + "fotos.txt")) return false;
     return true;
 }
 
@@ -218,4 +220,64 @@ bool RedSocial::cargarSolicitudes(const string& ruta) {
     }
     archivo.close();
     return true;
+}
+
+// Formato de cada línea: usuario;nombreAlbum;ruta;privacidad
+// privacidad: 0 = privado, 1 = amigos, 2 = público
+// El usuario es el dueño del álbum (su destructor lo borra).
+bool RedSocial::cargarAlbumes(const string& ruta) {
+    ifstream archivo(ruta);
+    if (!archivo.is_open()) {
+        cout << "No se pudo abrir " << ruta << endl;
+        return false;
+    }
+    string linea;
+    string partes[4];
+    while (getline(archivo, linea)) {
+        MedidorRecursos::contar();
+        if (partirLinea(linea, partes, 4) < 4) continue;
+        Usuario* dueno = buscarUsuario(partes[0]);
+        if (dueno == nullptr) continue;
+        Album* album = new Album(partes[1], partes[2], (short)textoAEntero(partes[3]));
+        MedidorRecursos::sumarMemoria(sizeof(Album));
+        dueno->agregarAlbum(album);
+    }
+    archivo.close();
+    return true;
+}
+
+// Formato de cada línea: usuario;nombreAlbum;rutaFoto;dd/mm/aaaa;tamanio;likes
+// El álbum es el dueño de sus fotos (agregarFoto hace el new y suma la memoria).
+bool RedSocial::cargarFotos(const string& ruta) {
+    ifstream archivo(ruta);
+    if (!archivo.is_open()) {
+        cout << "No se pudo abrir " << ruta << endl;
+        return false;
+    }
+    string linea;
+    string partes[6];
+    while (getline(archivo, linea)) {
+        MedidorRecursos::contar();
+        if (partirLinea(linea, partes, 6) < 6) continue;
+        Usuario* dueno = buscarUsuario(partes[0]);
+        if (dueno == nullptr) continue;
+        Album* album = buscarAlbum(dueno, partes[1]);
+        if (album == nullptr) continue;
+        Foto foto(partes[2], textoAFecha(partes[3]), (unsigned int)textoAEntero(partes[4]));
+        Foto* guardada = album->agregarFoto(foto);
+        guardada->setLikes(textoAEntero(partes[5]));
+    }
+    archivo.close();
+    return true;
+}
+
+// Búsqueda lineal: cada usuario tiene pocos álbumes, no vale la pena ordenarlos
+Album* RedSocial::buscarAlbum(Usuario* dueno, const string& nombreAlbum) {
+    for (unsigned int i = 0; i < dueno->getCantidadAlbumes(); i++) {
+        MedidorRecursos::contar();
+        if (dueno->getAlbumes()[i]->getNombre() == nombreAlbum) {
+            return dueno->getAlbumes()[i];
+        }
+    }
+    return nullptr;
 }
