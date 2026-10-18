@@ -20,6 +20,9 @@ private:
     // Carga de cada archivo (las llama cargarDatos)
     bool cargarUsuarios(const string& ruta);
 
+    bool cargarAmistades(const string& ruta);
+    bool cargarSolicitudes(const string& ruta);
+
 public:
 
     //constructor

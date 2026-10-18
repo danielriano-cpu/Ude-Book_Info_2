@@ -24,4 +24,6 @@ HEADERS += \
     usuario.h
 
 DISTFILES += \
+    datos/amistades.txt \
+    datos/solicitudes.txt \
     datos/usuarios.txt

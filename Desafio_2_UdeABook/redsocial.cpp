@@ -24,16 +24,52 @@ RedSocial::~RedSocial() {
     }
 }
 
+// Inserción ordenada: mete al usuario en su posición alfabética, para que la
+// lista esté SIEMPRE ordenada y buscarUsuario pueda usar búsqueda binaria.
+// Funciona aunque usuarios.txt venga desordenado o si en el futuro hay registro.
 void RedSocial::agregarUsuario(Usuario* u) {
-    usuarios.agregar(u);
+    string nombre = u->getNombreUsuario();
+    int n = usuarios.getCantidad();
+
+    // Atajo: si va después del último (caso normal con el archivo ordenado), va al final
+    MedidorRecursos::contar();
+    if (n == 0 || usuarios[n - 1]->getNombreUsuario() < nombre) {
+        usuarios.agregar(u);
+        return;
+    }
+
+    // Si no, se busca su posición con búsqueda binaria y se inserta ahí
+    int izquierda = 0;
+    int derecha = n;
+    while (izquierda < derecha) {
+        MedidorRecursos::contar();
+        int medio = (izquierda + derecha) / 2;
+        if (usuarios[medio]->getNombreUsuario() < nombre) {
+            izquierda = medio + 1;
+        } else {
+            derecha = medio;
+        }
+    }
+    usuarios.insertarEn(izquierda, u);
 }
 
-// Búsqueda lineal por nombre de usuario. Devuelve nullptr si no existe.
+// Búsqueda binaria por nombre de usuario. Devuelve nullptr si no existe.
+// Funciona porque agregarUsuario mantiene la lista siempre ordenada
+// alfabéticamente (inserción ordenada). En cada vuelta descarta la mitad:
+// con 1000 usuarios son unas 10 vueltas en vez de 1000.
 Usuario* RedSocial::buscarUsuario(const string& nombre) const {
-    for (int i = 0; i < usuarios.getCantidad(); i++) {
+    int izquierda = 0;
+    int derecha = usuarios.getCantidad() - 1;
+    while (izquierda <= derecha) {
         MedidorRecursos::contar();
-        if (usuarios[i]->getNombreUsuario() == nombre) {
-            return usuarios[i];
+        int medio = (izquierda + derecha) / 2;
+        string nombreMedio = usuarios[medio]->getNombreUsuario();
+        if (nombreMedio == nombre) {
+            return usuarios[medio];
+        } else if (nombreMedio < nombre) {
+            izquierda = medio + 1;      // está en la mitad derecha
+        } else {
+            derecha = medio - 1;        // está en la mitad izquierda
         }
     }
     return nullptr;
@@ -99,10 +135,13 @@ Fecha RedSocial::textoAFecha(const string& texto) {
 
 // ---------- Carga de archivos ----------
 
-// Carga todos los archivos de la carpeta. Por ahora solo usuarios;
-// los demás archivos se irán agregando aquí en orden.
+// Carga todos los archivos de la carpeta en orden: primero usuarios,
+// porque amistades y solicitudes los necesitan para encontrarlos.
+// Si algún archivo falla, se detiene y devuelve false.
 bool RedSocial::cargarDatos(const string& carpeta) {
     if (!cargarUsuarios(carpeta + "usuarios.txt")) return false;
+    if (!cargarAmistades(carpeta + "amistades.txt")) return false;
+    if (!cargarSolicitudes(carpeta + "solicitudes.txt")) return false;
     return true;
 }
 
@@ -129,6 +168,53 @@ bool RedSocial::cargarUsuarios(const string& ruta) {
                                  textoAFecha(partes[7]));    // inscripcion
         MedidorRecursos::sumarMemoria(sizeof(Usuario));
         agregarUsuario(u);
+    }
+    archivo.close();
+    return true;
+}
+
+// Formato de cada línea: usuario1;usuario2
+// La amistad es mutua: cada uno queda en la lista de amigos del otro.
+bool RedSocial::cargarAmistades(const string& ruta) {
+    ifstream archivo(ruta);
+    if (!archivo.is_open()) {
+        cout << "No se pudo abrir " << ruta << endl;
+        return false;
+    }
+    string linea;
+    string partes[2];
+    while (getline(archivo, linea)) {
+        MedidorRecursos::contar();
+        if (partirLinea(linea, partes, 2) < 2) continue;
+        Usuario* a = buscarUsuario(partes[0]);
+        Usuario* b = buscarUsuario(partes[1]);
+        if (a != nullptr && b != nullptr) {
+            a->agregarAmigo(b);
+            b->agregarAmigo(a);
+        }
+    }
+    archivo.close();
+    return true;
+}
+
+// Formato de cada línea: emisor;receptor  (solicitud pendiente)
+// La solicitud queda guardada en el receptor, que es quien la acepta.
+bool RedSocial::cargarSolicitudes(const string& ruta) {
+    ifstream archivo(ruta);
+    if (!archivo.is_open()) {
+        cout << "No se pudo abrir " << ruta << endl;
+        return false;
+    }
+    string linea;
+    string partes[2];
+    while (getline(archivo, linea)) {
+        MedidorRecursos::contar();
+        if (partirLinea(linea, partes, 2) < 2) continue;
+        Usuario* emisor = buscarUsuario(partes[0]);
+        Usuario* receptor = buscarUsuario(partes[1]);
+        if (emisor != nullptr && receptor != nullptr) {
+            receptor->recibirSolicitud(emisor);
+        }
     }
     archivo.close();
     return true;
