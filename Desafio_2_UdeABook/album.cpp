@@ -1,38 +1,29 @@
 #include "album.h"
 #include <string>
+#include "medidorrecursos.h"
 using namespace std;
 
 Album::Album(const string& titulo, const string& ruta, short estadoPrivacidad) {
     nombre = titulo;
     rutaAlmacenamiento = ruta;
     privacidad = estadoPrivacidad;
-    capacidad = 10;
-    fotosGuardadas = 0;
-    almacen = new Foto*[capacidad];
 }
 
 Foto* Album::agregarFoto(const Foto& foto) {
-    if (fotosGuardadas == capacidad) {
-        capacidad = capacidad * 2;
-        Foto** almacenTemp = new Foto*[capacidad];
-        for (unsigned short i = 0; i < fotosGuardadas; i++) {
-            almacenTemp[i] = almacen[i];
-        }
-        delete[] almacen;
-        almacen = almacenTemp;
-    }
-
-
-    almacen[fotosGuardadas] = new Foto(foto);
-    fotosGuardadas++;
-    return almacen[fotosGuardadas - 1];
+    Foto* nueva = new Foto(foto);
+    MedidorRecursos::sumarMemoria(sizeof(Foto));
+    fotos.agregar(nueva);           // si la lista está llena, ella misma crece
+    return nueva;
 }
 
 Album::~Album() {
-    for (unsigned int i = 0; i < fotosGuardadas; i++) {
-        delete almacen[i];
+    // El álbum es dueño de sus fotos: las borra una por una
+    for (int i = 0; i < fotos.getCantidad(); i++) {
+        MedidorRecursos::restarMemoria(sizeof(Foto));
+        delete fotos[i];
+        MedidorRecursos::contar();
     }
-    delete[] almacen;
+    // El arreglo de punteros lo libera el destructor de Lista automáticamente
 }
 
 string Album::getNombre() const {
@@ -60,9 +51,9 @@ void Album::setPrivacidad(short nuevaPrivacidad) {
 }
 
 unsigned short Album::getFotosGuardadas() const {
-    return fotosGuardadas;
+    return fotos.getCantidad();
 }
 
-Foto** Album::getAlmacen() const {
-    return almacen;
+const Lista<Foto*>& Album::getFotos() const {
+    return fotos;
 }
