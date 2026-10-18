@@ -49,6 +49,9 @@ public:
     int getCantidadUsuarios() const;
     int getCantidadMensajes() const;
 
+    // II. Inicio de sesión: devuelve el usuario si nombre y clave coinciden, o nullptr
+    Usuario* iniciarSesion(const string& nombre, const string& clave) const;
+
     // Carga todos los .txt de la carpeta indicada (ej: "datos/")
     bool cargarDatos(const string& carpeta);
 };

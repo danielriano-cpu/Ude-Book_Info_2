@@ -318,3 +318,14 @@ bool RedSocial::cargarMensajes(const string& ruta) {
     archivo.close();
     return true;
 }
+
+// ---------- Funcionalidades ----------
+
+// II. Inicio de sesión: busca al usuario (búsqueda binaria) y compara la clave
+Usuario* RedSocial::iniciarSesion(const string& nombre, const string& clave) const {
+    Usuario* u = buscarUsuario(nombre);
+    if (u != nullptr && u->getContrasenia() == clave) {
+        return u;
+    }
+    return nullptr;
+}
