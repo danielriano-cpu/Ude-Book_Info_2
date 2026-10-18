@@ -1,4 +1,5 @@
 #include "mensaje.h"
+#include "medidorrecursos.h"
 
 //Constructores y destructor
 
@@ -24,7 +25,8 @@ Mensaje::Mensaje(const Mensaje& otro)
 
 // Destructor: libera el texto que pidió con new en copiarTexto
 Mensaje::~Mensaje() {
-    // TODO medidor: restar (longitudTexto(contenido) + 1) bytes
+
+    MedidorRecursos::restarMemoria(longitudTexto(contenido) + 1);
     delete[] contenido;
 }
 
@@ -53,7 +55,7 @@ bool Mensaje::textoValido(const char* texto) {
 Mensaje& Mensaje::operator=(const Mensaje& otro) {
     if (this == &otro) return *this;   // evita m = m, que borraría su propio texto
 
-    // TODO medidor: restar los bytes del texto viejo
+    MedidorRecursos::restarMemoria(longitudTexto(contenido) + 1);
     delete[] contenido;                // libera el texto viejo
     contenido = copiarTexto(otro.contenido);
 
@@ -78,18 +80,22 @@ bool Mensaje::estaEnRango(const Fecha& inicio, const Fecha& fin) const {
 int Mensaje::longitudTexto(const char* texto) {
     int n = 0;
     while (texto[n] != '\0') {
-        n++;                       // TODO medidor: contar iteración
+        n++;
+        MedidorRecursos::contar();
     }
     return n;
 }
 
 // Crea un arreglo nuevo del tamaño exacto y copia el texto en él
 char* Mensaje::copiarTexto(const char* origen) {
+
     int n = longitudTexto(origen);
+
     char* destino = new char[n + 1];   // +1 para el '\0'
-    // TODO medidor: sumar (n + 1) bytes
+    MedidorRecursos::sumarMemoria(n + 1);
     for (int i = 0; i <= n; i++) {
-        destino[i] = origen[i];        // TODO medidor: contar iteración
+        destino[i] = origen[i];
+        MedidorRecursos::contar();
     }
     return destino;
 }
