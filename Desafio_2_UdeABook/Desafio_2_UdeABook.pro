@@ -10,6 +10,7 @@ SOURCES += \
         main.cpp \
         medidorrecursos.cpp \
         mensaje.cpp \
+        redsocial.cpp \
         usuario.cpp
 
 HEADERS += \
@@ -19,4 +20,13 @@ HEADERS += \
     lista.h \
     medidorrecursos.h \
     mensaje.h \
+    redsocial.h \
     usuario.h
+
+DISTFILES += \
+    datos/albumes.txt \
+    datos/amistades.txt \
+    datos/fotos.txt \
+    datos/mensajes.txt \
+    datos/solicitudes.txt \
+    datos/usuarios.txt

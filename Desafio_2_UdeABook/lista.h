@@ -26,6 +26,7 @@ public:
     Lista& operator=(const Lista&) = delete;
 
     void agregar(const T& elemento);     // mete al final; si está lleno, crece primero
+    void insertarEn(int pos, const T& elemento);   // mete en la posición pos y corre los demás a la derecha
     T& operator[](int pos) const;        // sobrecargamos el operador de acceso por posición: lista[i]
     int getCantidad() const;             // cuántos elementos hay
 
@@ -81,6 +82,23 @@ void Lista<T>::agregar(const T& elemento)
         crecer();
     }
     datos[cantidad] = elemento;
+    cantidad++;
+}
+
+// Inserta el elemento en la posición pos, corriendo una casilla a la derecha
+// todos los que estaban desde pos hasta el final (no deja huecos)
+template <typename T>
+void Lista<T>::insertarEn(int pos, const T& elemento) {
+    if (pos < 0) pos = 0;
+    if (pos > cantidad) pos = cantidad;
+    if (cantidad == capacidad) {
+        crecer();
+    }
+    for (int i = cantidad; i > pos; i--) {
+        datos[i] = datos[i - 1];
+        MedidorRecursos::contar();
+    }
+    datos[pos] = elemento;
     cantidad++;
 }
 
