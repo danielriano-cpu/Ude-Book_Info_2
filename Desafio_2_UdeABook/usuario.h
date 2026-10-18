@@ -76,6 +76,8 @@ public:
 
     void enviarSolicitud(Usuario* destinatario);
 
+    void eliminarSolicitud(Usuario* solicitante);
+
     //Getters
     string getNombreUsuario() const;
     string getContrasenia() const;

@@ -6,6 +6,11 @@ Foto::Foto(const string& ruta, const Fecha& fecha, unsigned int tamanio):rutaArc
 void Foto::sumarLikes(){
     likes++;
 }
+void Foto::quitarLike() {
+    if (likes > 0) {
+        likes--;
+    }
+}
 //Getters de likes y rutas
 int Foto::getLikes()const{
     return likes;
@@ -20,4 +25,11 @@ Fecha Foto::getFechaPublicacion() const{
 
 unsigned int Foto::getTamanioBytes() const{
     return tamanioBytes;
+}
+
+void Foto::setLikes(int cantidad){
+    if(cantidad < 0){
+        cantidad = 0;
+    }
+    likes = cantidad;
 }

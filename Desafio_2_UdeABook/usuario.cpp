@@ -1,7 +1,7 @@
 #include "usuario.h"
 #include "album.h"
 #include "mensaje.h"
-
+#include "medidorrecursos.h"
 Usuario::Usuario(const string& nombre, const Fecha& nacimiento, const string& correo,
                  const string& foto, const string& clave, const string& city,
                  const string& country, const Fecha& inscripcion): fechaNacimiento(nacimiento), fechaInscripcion(inscripcion) //inicializamos directamente las fechas ya que no tenemos sobrecargados los operadores de asignacion
@@ -96,6 +96,21 @@ Usuario::Usuario(const string& nombre, const Fecha& nacimiento, const string& co
     void Usuario::enviarSolicitud(Usuario* destinatario) {
         if (destinatario != nullptr) {
             destinatario->recibirSolicitud(this);
+        }
+    }
+
+    void Usuario::eliminarSolicitud(Usuario* solicitante) {
+        for (unsigned int i = 0; i < cantidadSolicitudes; i++) {
+            MedidorRecursos::contar(); // Reportamos iteración
+            if (solicitudesAmistad[i] == solicitante) {
+                // Encontramos la solicitud, ahora rodamos los de la derecha hacia la izquierda
+                for (unsigned int j = i; j < cantidadSolicitudes - 1; j++) {
+                    MedidorRecursos::contar();
+                    solicitudesAmistad[j] = solicitudesAmistad[j + 1];
+                }
+                cantidadSolicitudes--; // Reducimos el contador
+                break;
+            }
         }
     }
 

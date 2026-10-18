@@ -18,11 +18,13 @@ public:
     Foto(const string& ruta, const Fecha& fecha, unsigned int tamanio = 0);
     //Metodo
     void sumarLikes();
-    //Getters
+    void quitarLike();
+    //Getters y setters
     int getLikes() const;
     string getRutaArchivo() const;
     Fecha getFechaPublicacion() const;
     unsigned int getTamanioBytes() const;
+    void setLikes(int cantidad);
 };
 
 #endif // FOTO_H
