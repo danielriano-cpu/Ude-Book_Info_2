@@ -1,0 +1,3 @@
+ana;1234;ana@udea.edu.co;fotos/perfil/ana.jpg;15/04/2003;Medellin;Colombia;10/01/2024
+luis;abcd;luis@udea.edu.co;fotos/perfil/luis.jpg;02/11/2002;Bogota;Colombia;05/03/2024
+sofia;s0f1a;sofia@udea.edu.co;fotos/perfil/sofia.jpg;20/07/2004;Cali;Colombia;12/06/2025

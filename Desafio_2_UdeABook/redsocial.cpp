@@ -1,5 +1,7 @@
 #include "redsocial.h"
 #include "medidorrecursos.h"
+#include <fstream>
+#include <iostream>
 
 // Las listas arrancan grandes porque se cargan más de 1000 usuarios:
 // así no tienen que crecer varias veces durante la carga
@@ -43,4 +45,91 @@ void RedSocial::agregarMensaje(Mensaje* m) {
 
 int RedSocial::getCantidadUsuarios() const {
     return usuarios.getCantidad();
+}
+
+// ---------- Auxiliares para la carga ----------
+
+// Parte una línea por ';' y guarda cada pedazo en partes[].
+// Cuando llega a la última parte, ya no corta más: así el texto de un
+// mensaje puede tener ';' sin dañar la línea. Devuelve cuántas partes llenó.
+int RedSocial::partirLinea(const string& linea, string partes[], int maxPartes) {
+    int cantidad = 0;
+    partes[0] = "";
+    for (int i = 0; i < (int)linea.length(); i++) {
+        MedidorRecursos::contar();
+        char c = linea[i];
+        if (c == ';' && cantidad < maxPartes - 1) {
+            cantidad++;
+            partes[cantidad] = "";
+        } else if (c != '\r') {          // ignora el \r de los archivos hechos en Windows
+            partes[cantidad] += c;
+        }
+    }
+    return cantidad + 1;
+}
+
+// Convierte "123" en 123, recorriendo dígito por dígito.
+int RedSocial::textoAEntero(const string& texto) {
+    int numero = 0;
+    for (int i = 0; i < (int)texto.length(); i++) {
+        MedidorRecursos::contar();
+        if (texto[i] >= '0' && texto[i] <= '9') {
+            numero = numero * 10 + (texto[i] - '0');
+        }
+    }
+    return numero;
+}
+
+// Convierte "dd/mm/aaaa" o "dd/mm/aaaa hh:mm" en una Fecha.
+// Va armando números y cada vez que encuentra algo que no es dígito pasa al siguiente.
+Fecha RedSocial::textoAFecha(const string& texto) {
+    int valores[5] = {0, 0, 0, 0, 0};    // dia, mes, anio, hora, minuto
+    int pos = 0;
+    for (int i = 0; i < (int)texto.length() && pos < 5; i++) {
+        MedidorRecursos::contar();
+        char c = texto[i];
+        if (c >= '0' && c <= '9') {
+            valores[pos] = valores[pos] * 10 + (c - '0');
+        } else if (i > 0 && texto[i - 1] >= '0' && texto[i - 1] <= '9') {
+            pos++;
+        }
+    }
+    return Fecha(valores[0], valores[1], valores[2], valores[3], valores[4]);
+}
+
+// ---------- Carga de archivos ----------
+
+// Carga todos los archivos de la carpeta. Por ahora solo usuarios;
+// los demás archivos se irán agregando aquí en orden.
+bool RedSocial::cargarDatos(const string& carpeta) {
+    if (!cargarUsuarios(carpeta + "usuarios.txt")) return false;
+    return true;
+}
+
+// Formato de cada línea:
+// nombre;clave;email;fotoPerfil;dd/mm/aaaa(nacimiento);ciudad;pais;dd/mm/aaaa(inscripcion)
+bool RedSocial::cargarUsuarios(const string& ruta) {
+    ifstream archivo(ruta);
+    if (!archivo.is_open()) {
+        cout << "No se pudo abrir " << ruta << endl;
+        return false;
+    }
+    string linea;
+    string partes[8];
+    while (getline(archivo, linea)) {
+        MedidorRecursos::contar();
+        if (partirLinea(linea, partes, 8) < 8) continue;   // línea vacía o incompleta: se salta
+        Usuario* u = new Usuario(partes[0],                  // nombre
+                                 textoAFecha(partes[4]),     // nacimiento
+                                 partes[2],                  // email
+                                 partes[3],                  // foto de perfil
+                                 partes[1],                  // clave
+                                 partes[5],                  // ciudad
+                                 partes[6],                  // pais
+                                 textoAFecha(partes[7]));    // inscripcion
+        MedidorRecursos::sumarMemoria(sizeof(Usuario));
+        agregarUsuario(u);
+    }
+    archivo.close();
+    return true;
 }

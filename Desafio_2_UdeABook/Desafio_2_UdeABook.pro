@@ -22,3 +22,6 @@ HEADERS += \
     mensaje.h \
     redsocial.h \
     usuario.h
+
+DISTFILES += \
+    datos/usuarios.txt

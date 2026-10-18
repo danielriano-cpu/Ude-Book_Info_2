@@ -12,6 +12,14 @@ private:
     Lista<Usuario*> usuarios;   // todos los usuarios de la plataforma (RedSocial es su dueña)
     Lista<Mensaje*> mensajes;   // todos los mensajes enviados (RedSocial es su dueña)
 
+    // Auxiliares para la carga de archivos
+    static int partirLinea(const string& linea, string partes[], int maxPartes);
+    static int textoAEntero(const string& texto);
+    static Fecha textoAFecha(const string& texto);
+
+    // Carga de cada archivo (las llama cargarDatos)
+    bool cargarUsuarios(const string& ruta);
+
 public:
 
     //constructor
@@ -27,6 +35,9 @@ public:
     Usuario* buscarUsuario(const string& nombre) const;
     void agregarMensaje(Mensaje* m);
     int getCantidadUsuarios() const;
+
+    // Carga todos los .txt de la carpeta indicada (ej: "datos/")
+    bool cargarDatos(const string& carpeta);
 };
 
 #endif // REDSOCIAL_H
