@@ -114,6 +114,50 @@ Usuario::Usuario(const string& nombre, const Fecha& nacimiento, const string& co
         }
     }
 
+    bool Usuario::esAmigo(Usuario* otro) const {
+        for (unsigned int i = 0; i < cantidadAmigos; i++) {
+            MedidorRecursos::contar(); // Reportamos iteración
+            if (amigos[i] == otro) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool Usuario::tieneSolicitudDe(Usuario* otro) const {
+        for (unsigned int i = 0; i < cantidadSolicitudes; i++) {
+            MedidorRecursos::contar();
+            if (solicitudesAmistad[i] == otro) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    int Usuario::amigosEnComun(Usuario* otro) const {
+        int contador = 0;
+        for (unsigned int i = 0; i < cantidadAmigos; i++) {
+            MedidorRecursos::contar();
+            // Si mi amigo actual también es amigo del 'otro' usuario
+            if (otro->esAmigo(amigos[i])) {
+                contador++;
+            }
+        }
+        return contador;
+    }
+
+    bool Usuario::aceptarSolicitud(Usuario* solicitante) {
+        // Verificamos si la solicitud realmente existe
+        if (tieneSolicitudDe(solicitante)) {
+            agregarAmigo(solicitante);        // Lo agrego a mis amigos
+            solicitante->agregarAmigo(this);  // Él me agrega a los suyos
+            eliminarSolicitud(solicitante);   // Borramos la solicitud pendiente
+            return true;
+        }
+        return false;
+    }
+
+
     //Getters
 
     string Usuario::getNombreUsuario() const {
@@ -127,6 +171,20 @@ Usuario::Usuario(const string& nombre, const Fecha& nacimiento, const string& co
     string Usuario::getFotoPerfil() const {
         return fotoPerfil;
     }
+    string Usuario::getEmail() const {
+        return email; }
+
+    string Usuario::getCiudad() const {
+        return ciudad; }
+
+    string Usuario::getPais() const {
+        return pais; }
+
+    const Fecha& Usuario::getFechaNacimiento() const {
+        return fechaNacimiento; }
+
+    const Fecha& Usuario::getFechaInscripcion() const {
+        return fechaInscripcion; }
 
 
     unsigned int Usuario::getCantidadAmigos() const {
@@ -152,6 +210,18 @@ Usuario::Usuario(const string& nombre, const Fecha& nacimiento, const string& co
     Usuario** Usuario::getSolicitudesAmistad() const {
         return solicitudesAmistad;
     }
+
+    Mensaje** Usuario::getMensajesRecibidos() const {
+        return mensajesRecibidos; }
+
+    unsigned int Usuario::getCantidadMensajesRecibidos() const {
+        return cantidadMensajesRecibidos; }
+
+    Mensaje** Usuario::getMensajesEnviados() const {
+        return mensajesEnviados; }
+
+    unsigned int Usuario::getCantidadMensajesEnviados() const {
+        return cantidadMensajesEnviados; }
 
 
 Usuario::~Usuario(){
