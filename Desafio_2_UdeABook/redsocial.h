@@ -16,7 +16,6 @@ private:
     // Auxiliares para la carga de archivos
     static int partirLinea(const string& linea, string partes[], int maxPartes);
     static int textoAEntero(const string& texto);
-    static Fecha textoAFecha(const string& texto);
 
     // Carga de cada archivo (las llama cargarDatos)
     bool cargarUsuarios(const string& ruta);
@@ -51,6 +50,11 @@ public:
 
     // II. Inicio de sesión: devuelve el usuario si nombre y clave coinciden, o nullptr
     Usuario* iniciarSesion(const string& nombre, const string& clave) const;
+
+    bool enviarMensaje(Usuario* emisor, Usuario* receptor, const string& texto);   // VI
+
+    // Convierte "dd/mm/aaaa" o "dd/mm/aaaa hh:mm" en Fecha (lo usan la carga y el menú)
+    static Fecha textoAFecha(const string& texto);
 
     // Carga todos los .txt de la carpeta indicada (ej: "datos/")
     bool cargarDatos(const string& carpeta);

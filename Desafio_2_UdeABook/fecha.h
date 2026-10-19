@@ -29,6 +29,8 @@ public:
 
     //métodos
     static bool esValida(int d, int m, int a, int h = 0, int min = 0);
+    static int diasDelMes(int m, int a);   // 28, 29, 30 o 31
+    static Fecha ahora();                  // fecha y hora actuales (hora de Colombia)
 
     //Declaraciones para la sobrecarga de operadores
 

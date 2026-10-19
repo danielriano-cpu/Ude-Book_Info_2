@@ -1,4 +1,5 @@
 #include "fecha.h"
+#include <chrono>
 
 //Constructor por defecto
 Fecha::Fecha(){
@@ -92,7 +93,48 @@ bool Fecha::operator<=(const Fecha &otra) const{
 
 //funcion amiga que sobrecarga el operador "<<" el cual permite imprimir una fecha con cout << fecha, sin tener que implementar un metodo imprimeFecha()
 std::ostream& operator<<(std::ostream& os, const Fecha &f){
-    os << (int)f.dia << "/" << (int)f.mes << "/" << f.anio
-       << " " << (int)f.hora << ":" << (int)f.minuto;
+    // Se rellena con un 0 a la izquierda cuando el número tiene un solo dígito: 09/03/2026 07:05
+    if (f.dia < 10) os << "0";
+    os << (int)f.dia << "/";
+    if (f.mes < 10) os << "0";
+    os << (int)f.mes << "/" << f.anio << " ";
+    if (f.hora < 10) os << "0";
+    os << (int)f.hora << ":";
+    if (f.minuto < 10) os << "0";
+    os << (int)f.minuto;
     return os;
+}
+
+// Días que tiene el mes m del año a (tiene en cuenta los años bisiestos)
+int Fecha::diasDelMes(int m, int a) {
+    if (m == 2) {
+        bool bisiesto = (a % 4 == 0 && a % 100 != 0) || (a % 400 == 0);
+        return bisiesto ? 29 : 28;
+    }
+    if (m == 4 || m == 6 || m == 9 || m == 11) return 30;
+    return 31;
+}
+
+// Fecha y hora actuales. <chrono> (librería estándar de C++) da los segundos
+// transcurridos desde el 1/1/1970; a partir de ahí se cuentan años y meses completos.
+Fecha Fecha::ahora() {
+    long long segundos = std::chrono::duration_cast<std::chrono::seconds>(
+                             std::chrono::system_clock::now().time_since_epoch()).count();
+    segundos -= 5 * 3600;                          // Colombia está en UTC-5
+
+    long long dias = segundos / 86400;             // 86400 segundos tiene un día
+    int segundosDelDia = segundos % 86400;
+
+    int anio = 1970;
+    while (dias >= (diasDelMes(2, anio) == 29 ? 366 : 365)) {   // se descuentan años completos
+        dias -= (diasDelMes(2, anio) == 29 ? 366 : 365);
+        anio++;
+    }
+    int mes = 1;
+    while (dias >= diasDelMes(mes, anio)) {        // se descuentan meses completos
+        dias -= diasDelMes(mes, anio);
+        mes++;
+    }
+    int dia = dias + 1;                            // lo que sobra son los días del mes actual
+    return Fecha(dia, mes, anio, segundosDelDia / 3600, (segundosDelDia % 3600) / 60);
 }

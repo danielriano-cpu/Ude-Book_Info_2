@@ -329,3 +329,15 @@ Usuario* RedSocial::iniciarSesion(const string& nombre, const string& clave) con
     }
     return nullptr;
 }
+
+// VI. Enviar mensaje: valida el texto, crea el mensaje con la fecha actual y lo registra.
+// RedSocial es la dueña del mensaje; emisor y receptor guardan el mismo puntero.
+bool RedSocial::enviarMensaje(Usuario* emisor, Usuario* receptor, const string& texto) {
+    if (!Mensaje::textoValido(texto.c_str())) return false;   // vacío o de más de 512 caracteres
+    Mensaje* m = new Mensaje(emisor, receptor, texto.c_str(), Fecha::ahora());
+    MedidorRecursos::sumarMemoria(sizeof(Mensaje));
+    agregarMensaje(m);
+    emisor->enviarMensaje(m);
+    receptor->recibirMensaje(m);
+    return true;
+}
