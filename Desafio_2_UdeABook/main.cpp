@@ -2,6 +2,7 @@
 #include <string>
 #include "redsocial.h"
 #include "medidorrecursos.h"
+#include <random>
 using namespace std;
 
 // Lee una línea y la convierte en número (sin usar métodos de búsqueda de string).
@@ -130,6 +131,85 @@ void mostrarCarrusel(Album* album) {
     delete[] yaDioLike;
 }
 
+// II. Visualización de mejores amigos (fotos de perfil)
+// Prioridad según amigos en común: <= 10 -> 1 ; 11 a 20 -> 2.5 ; > 20 -> 3.5.
+// Para no usar decimales se multiplican por 2: pesos 2, 5 y 7 (la proporción es la misma).
+int pesoPorComunes(int comunes) {
+    if (comunes > 20) return 7;
+    if (comunes >= 11) return 5;
+    return 2;
+}
+
+// Elige hasta 3 amigos al azar, con probabilidad proporcional a su peso, sin repetir:
+// es como una rifa donde cada amigo tiene tantas boletas como su peso. Los ya usados
+// (usado[i] == true) no participan, así el segundo grupo es distinto del primero.
+int elegirTres(int* pesos, bool* usado, int cantidad, int* elegidos, mt19937& generador) {
+    int elegidosCount = 0;
+    while (elegidosCount < 3) {
+        int total = 0;                                   // boletas que quedan en la rifa
+        for (int i = 0; i < cantidad; i++) {
+            MedidorRecursos::contar();
+            if (!usado[i]) total += pesos[i];
+        }
+        if (total == 0) break;                           // no quedan amigos disponibles
+
+        uniform_int_distribution<int> rifa(0, total - 1);
+        int boleta = rifa(generador);                    // boleta ganadora
+        for (int i = 0; i < cantidad; i++) {             // se busca de quién es esa boleta
+            MedidorRecursos::contar();
+            if (usado[i]) continue;
+            if (boleta < pesos[i]) {
+                usado[i] = true;
+                elegidos[elegidosCount] = i;
+                elegidosCount++;
+                break;
+            }
+            boleta -= pesos[i];
+        }
+    }
+    return elegidosCount;
+}
+
+void mostrarMejoresAmigos(Usuario* sesion) {
+    int cantidad = sesion->getCantidadAmigos();
+    if (cantidad == 0) {
+        cout << "Aun no tienes amigos para mostrar." << endl;
+        return;
+    }
+    int* pesos = new int[cantidad];
+    bool* usado = new bool[cantidad];
+    MedidorRecursos::sumarMemoria(cantidad * (sizeof(int) + sizeof(bool)));
+    for (int i = 0; i < cantidad; i++) {
+        MedidorRecursos::contar();
+        pesos[i] = pesoPorComunes(sesion->amigosEnComun(sesion->getAmigos()[i]));
+        usado[i] = false;
+    }
+
+    random_device semilla;               // semilla distinta en cada ejecución: sin patrón fijo
+    mt19937 generador(semilla());
+    int elegidos[3];
+
+    for (int ronda = 1; ronda <= 2; ronda++) {
+        int n = elegirTres(pesos, usado, cantidad, elegidos, generador);
+        cout << "\n+------------------------------------------+" << endl;
+        cout << "  TUS MEJORES AMIGOS" << (ronda == 2 ? " (actualizado)" : "") << endl;
+        cout << "+------------------------------------------+" << endl;
+        for (int k = 0; k < n; k++) {
+            Usuario* amigo = sesion->getAmigos()[elegidos[k]];
+            cout << "  " << amigo->getNombreUsuario() << "  ->  " << amigo->getFotoPerfil() << endl;
+        }
+        cout << "+------------------------------------------+" << endl;
+        if (ronda == 2) break;
+        cout << "1. Ver otras 3 fotos (solo una vez)   0. Continuar" << endl;
+        cout << "Opcion: ";
+        if (leerOpcion() != 1) break;
+    }
+
+    MedidorRecursos::restarMemoria(cantidad * (sizeof(int) + sizeof(bool)));
+    delete[] pesos;
+    delete[] usado;
+}
+
 // ---------- Funciones del menú (una por opción) ----------
 // Reciben la red por referencia (sin copias) y el usuario con sesión iniciada
 
@@ -239,8 +319,57 @@ void visitarPerfil(RedSocial& red, Usuario* sesion) {
 }
 
 // V. Ver sugerencias de amistad: K amigos de amigos ordenados por amigos en común
+// Criterio de orden para merge sort en las sugerencias: va primero la que tiene
+// más amigos en común (usa el operator> sobrecargado de Sugerencia).
+bool masAmigosEnComun(Sugerencia a, Sugerencia b) {
+    return a > b;
+}
+
 void verSugerencias(RedSocial& red, Usuario* sesion) {
-    cout << "\n[Ver sugerencias de amistad: pendiente]" << endl;
+    cout << "\nCuantas sugerencias quieres ver (1 a 20)? ";
+    int k = leerOpcion();
+    if (k < 1 || k > 20) {
+        cout << "Debe ser un numero entre 1 y 20." << endl;
+        return;
+    }
+
+    // Candidatos: amigos de mis amigos que no son mis amigos, con sus amigos en común
+    int total = red.getCantidadUsuarios();
+    Sugerencia* candidatos = new Sugerencia[total];
+    MedidorRecursos::sumarMemoria(total * sizeof(Sugerencia));
+    int cantidad = red.calcularCandidatos(sesion, candidatos);
+
+    // Se ordenan de más a menos amigos en común (los empates quedan en orden alfabético)
+    mergeSort(candidatos, cantidad, masAmigosEnComun);
+
+    int mostrar = (k < cantidad) ? k : cantidad;
+    if (mostrar == 0) {
+        cout << "No hay sugerencias por ahora." << endl;
+    } else {
+        cout << "\nSugerencias de amistad:" << endl;
+        for (int i = 0; i < mostrar; i++) {
+            MedidorRecursos::contar();
+            cout << "  " << (i + 1) << ". " << candidatos[i].getUsuario()->getNombreUsuario()
+                 << "  (" << candidatos[i].getComunes() << " amigos en comun)" << endl;
+        }
+
+        cout << "Numero de la sugerencia a la que quieres enviar solicitud (0 para volver): ";
+        int elegida = leerOpcion();
+        if (elegida >= 1 && elegida <= mostrar) {
+            Usuario* otro = candidatos[elegida - 1].getUsuario();
+            if (sesion->tieneSolicitudDe(otro)) {
+                cout << otro->getNombreUsuario() << " ya te envio una solicitud: aceptala en Administrar amistades." << endl;
+            } else if (otro->tieneSolicitudDe(sesion)) {
+                cout << "Ya le enviaste una solicitud a " << otro->getNombreUsuario() << "." << endl;
+            } else {
+                sesion->enviarSolicitud(otro);
+                cout << "Solicitud enviada a " << otro->getNombreUsuario() << "." << endl;
+            }
+        }
+    }
+
+    MedidorRecursos::restarMemoria(total * sizeof(Sugerencia));
+    delete[] candidatos;
 }
 
 // VI. Administrar mensajes: enviar, leer nuevos y buscar por rango de fechas
@@ -382,6 +511,7 @@ int main() {
             cout << "Usuario o clave incorrectos." << endl;
         } else {
             cout << "\nBienvenido, " << sesion->getNombreUsuario() << "!" << endl;
+            mostrarMejoresAmigos(sesion);
         }
         MedidorRecursos::mostrarReporte("Inicio de sesion");
     }

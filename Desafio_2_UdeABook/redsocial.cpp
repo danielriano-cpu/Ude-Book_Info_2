@@ -341,3 +341,67 @@ bool RedSocial::enviarMensaje(Usuario* emisor, Usuario* receptor, const string& 
     receptor->recibirMensaje(m);
     return true;
 }
+
+// Posición de un usuario en la lista (búsqueda binaria, la lista está siempre ordenada)
+int RedSocial::indiceDe(const string& nombre) const {
+    int izquierda = 0;
+    int derecha = usuarios.getCantidad() - 1;
+    while (izquierda <= derecha) {
+        MedidorRecursos::contar();
+        int medio = (izquierda + derecha) / 2;
+        string nombreMedio = usuarios[medio]->getNombreUsuario();
+        if (nombreMedio == nombre) return medio;
+        if (nombreMedio < nombre) izquierda = medio + 1;
+        else derecha = medio - 1;
+    }
+    return -1;
+}
+
+// V. Candidatos a sugerencia: los amigos de mis amigos que no son mis amigos,
+// cada uno con la cantidad de amigos en común.
+// Se usa un arreglo 'conteo' con una casilla por usuario (como una fila de la matriz
+// de adyacencia): por cada amigo de un amigo se suma 1 en su casilla. Al final, la
+// casilla de cada candidato tiene exactamente cuántos amigos en común tiene conmigo.
+// 'candidatos' debe tener espacio para getCantidadUsuarios() elementos. Devuelve cuántos llenó.
+int RedSocial::calcularCandidatos(Usuario* u, Sugerencia* candidatos) const {
+    int n = usuarios.getCantidad();
+    int* conteo = new int[n];
+    MedidorRecursos::sumarMemoria(n * sizeof(int));
+    for (int i = 0; i < n; i++) {
+        conteo[i] = 0;
+        MedidorRecursos::contar();
+    }
+
+    // Yo y mis amigos actuales se marcan con -1: no se pueden sugerir
+    conteo[indiceDe(u->getNombreUsuario())] = -1;
+    for (unsigned int i = 0; i < u->getCantidadAmigos(); i++) {
+        MedidorRecursos::contar();
+        conteo[indiceDe(u->getAmigos()[i]->getNombreUsuario())] = -1;
+    }
+
+    // Por cada amigo mío, cada uno de sus amigos suma 1 (si no está marcado con -1)
+    for (unsigned int i = 0; i < u->getCantidadAmigos(); i++) {
+        Usuario* amigo = u->getAmigos()[i];
+        for (unsigned int j = 0; j < amigo->getCantidadAmigos(); j++) {
+            MedidorRecursos::contar();
+            int posicion = indiceDe(amigo->getAmigos()[j]->getNombreUsuario());
+            if (conteo[posicion] >= 0) {
+                conteo[posicion]++;
+            }
+        }
+    }
+
+    // Los que quedaron con conteo > 0 son los candidatos
+    int cantidad = 0;
+    for (int i = 0; i < n; i++) {
+        MedidorRecursos::contar();
+        if (conteo[i] > 0) {
+            candidatos[cantidad] = Sugerencia(usuarios[i], conteo[i]);
+            cantidad++;
+        }
+    }
+
+    MedidorRecursos::restarMemoria(n * sizeof(int));
+    delete[] conteo;
+    return cantidad;
+}
