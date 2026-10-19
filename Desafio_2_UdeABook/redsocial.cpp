@@ -8,9 +8,7 @@
 RedSocial::RedSocial() : usuarios(1024), mensajes(1024) {
 }
 
-// RedSocial es dueña de los usuarios y de los mensajes: los borra uno por uno.
-// (Cada usuario borra sus álbumes y cada álbum sus fotos.)
-// Los arreglos de las listas los liberan las propias Listas al final.
+// Borra usuarios y mensajes (es su dueña). Usuario borra sus álbumes y Album sus fotos
 RedSocial::~RedSocial() {
     for (int i = 0; i < mensajes.getCantidad(); i++) {
         MedidorRecursos::restarMemoria(sizeof(Mensaje));
@@ -24,9 +22,7 @@ RedSocial::~RedSocial() {
     }
 }
 
-// Inserción ordenada: mete al usuario en su posición alfabética, para que la
-// lista esté SIEMPRE ordenada y buscarUsuario pueda usar búsqueda binaria.
-// Funciona aunque usuarios.txt venga desordenado o si en el futuro hay registro.
+// Inserción ordenada: deja la lista en orden alfabético para poder usar búsqueda binaria
 void RedSocial::agregarUsuario(Usuario* u) {
     string nombre = u->getNombreUsuario();
     int n = usuarios.getCantidad();
@@ -53,10 +49,7 @@ void RedSocial::agregarUsuario(Usuario* u) {
     usuarios.insertarEn(izquierda, u);
 }
 
-// Búsqueda binaria por nombre de usuario. Devuelve nullptr si no existe.
-// Funciona porque agregarUsuario mantiene la lista siempre ordenada
-// alfabéticamente (inserción ordenada). En cada vuelta descarta la mitad:
-// con 1000 usuarios son unas 10 vueltas en vez de 1000.
+// Búsqueda binaria por nombre (~10 vueltas con 1000 usuarios). nullptr si no existe
 Usuario* RedSocial::buscarUsuario(const string& nombre) const {
     int izquierda = 0;
     int derecha = usuarios.getCantidad() - 1;
@@ -87,11 +80,9 @@ int RedSocial::getCantidadMensajes() const {
     return mensajes.getCantidad();
 }
 
-// ---------- Auxiliares para la carga ----------
+//Auxiliares para la carga
 
-// Parte una línea por ';' y guarda cada pedazo en partes[].
-// Cuando llega a la última parte, ya no corta más: así el texto de un
-// mensaje puede tener ';' sin dañar la línea. Devuelve cuántas partes llenó.
+// Parte la línea por ';'. La última parte no se corta (el texto puede tener ';')
 int RedSocial::partirLinea(const string& linea, string partes[], int maxPartes) {
     int cantidad = 0;
     partes[0] = "";
@@ -120,8 +111,7 @@ int RedSocial::textoAEntero(const string& texto) {
     return numero;
 }
 
-// Convierte "dd/mm/aaaa" o "dd/mm/aaaa hh:mm" en una Fecha.
-// Va armando números y cada vez que encuentra algo que no es dígito pasa al siguiente.
+// "dd/mm/aaaa" o "dd/mm/aaaa hh:mm" -> Fecha
 Fecha RedSocial::textoAFecha(const string& texto) {
     int valores[5] = {0, 0, 0, 0, 0};    // dia, mes, anio, hora, minuto
     int pos = 0;
@@ -137,11 +127,9 @@ Fecha RedSocial::textoAFecha(const string& texto) {
     return Fecha(valores[0], valores[1], valores[2], valores[3], valores[4]);
 }
 
-// ---------- Carga de archivos ----------
+// Carga de archivos
 
-// Carga todos los archivos de la carpeta en orden: primero usuarios,
-// porque amistades y solicitudes los necesitan para encontrarlos.
-// Si algún archivo falla, se detiene y devuelve false.
+// Carga en orden: usuarios primero porque los demás archivos los buscan por nombre
 bool RedSocial::cargarDatos(const string& carpeta) {
     if (!cargarUsuarios(carpeta + "usuarios.txt")) return false;
     if (!cargarAmistades(carpeta + "amistades.txt")) return false;
@@ -276,7 +264,7 @@ bool RedSocial::cargarFotos(const string& ruta) {
     return true;
 }
 
-// Búsqueda lineal: cada usuario tiene pocos álbumes, no vale la pena ordenarlos
+// Búsqueda lineal (cada usuario tiene pocos álbumes)
 Album* RedSocial::buscarAlbum(Usuario* dueno, const string& nombreAlbum) {
     for (unsigned int i = 0; i < dueno->getCantidadAlbumes(); i++) {
         MedidorRecursos::contar();
@@ -357,12 +345,8 @@ int RedSocial::indiceDe(const string& nombre) const {
     return -1;
 }
 
-// V. Candidatos a sugerencia: los amigos de mis amigos que no son mis amigos,
-// cada uno con la cantidad de amigos en común.
-// Se usa un arreglo 'conteo' con una casilla por usuario (como una fila de la matriz
-// de adyacencia): por cada amigo de un amigo se suma 1 en su casilla. Al final, la
-// casilla de cada candidato tiene exactamente cuántos amigos en común tiene conmigo.
-// 'candidatos' debe tener espacio para getCantidadUsuarios() elementos. Devuelve cuántos llenó.
+// V. Amigos de mis amigos que no son mis amigos, con sus amigos en común.
+// conteo[] tiene una casilla por usuario (una fila de la matriz): cada amigo de un amigo suma 1
 int RedSocial::calcularCandidatos(Usuario* u, Sugerencia* candidatos) const {
     int n = usuarios.getCantidad();
     int* conteo = new int[n];
