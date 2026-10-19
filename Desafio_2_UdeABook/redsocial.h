@@ -33,6 +33,13 @@ private:
     // Busca un álbum por nombre dentro de los álbumes de un usuario
     static Album* buscarAlbum(Usuario* dueno, const string& nombreAlbum);
 
+    // Guardado de cada archivo (las llama guardarDatos)
+    bool guardarAmistades(const string& ruta) const;
+    bool guardarSolicitudes(const string& ruta) const;
+    bool guardarFotos(const string& ruta) const;
+    bool guardarMensajes(const string& ruta) const;
+    static void escribirFechaSinHora(ostream& salida, const Fecha& f);
+
     // Posición de un usuario en la lista ordenada (búsqueda binaria), o -1 si no está
     int indiceDe(const string& nombre) const;
 
@@ -67,6 +74,9 @@ public:
 
     // Carga todos los .txt de la carpeta indicada (ej: "datos/")
     bool cargarDatos(const string& carpeta);
+
+    // Guarda en los .txt lo que puede cambiar durante el programa
+    bool guardarDatos(const string& carpeta) const;
 };
 
 #endif // REDSOCIAL_H

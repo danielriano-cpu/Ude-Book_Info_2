@@ -405,3 +405,114 @@ int RedSocial::calcularCandidatos(Usuario* u, Sugerencia* candidatos) const {
     delete[] conteo;
     return cantidad;
 }
+
+
+// ---------- Guardado de archivos ----------
+
+// Guarda lo que puede cambiar mientras el programa corre: amistades (al aceptar),
+// solicitudes (al enviar o aceptar), fotos (los likes) y mensajes (nuevos y vistos).
+// usuarios.txt y albumes.txt no se reescriben porque el programa no los modifica.
+// Usa el mismo formato que la carga, así la próxima ejecución lee los cambios.
+bool RedSocial::guardarDatos(const string& carpeta) const {
+    if (!guardarAmistades(carpeta + "amistades.txt")) return false;
+    if (!guardarSolicitudes(carpeta + "solicitudes.txt")) return false;
+    if (!guardarFotos(carpeta + "fotos.txt")) return false;
+    if (!guardarMensajes(carpeta + "mensajes.txt")) return false;
+    return true;
+}
+
+// Escribe una fecha como dd/mm/aaaa (sin hora), con ceros a la izquierda
+void RedSocial::escribirFechaSinHora(ostream& salida, const Fecha& f) {
+    if (f.getDia() < 10) salida << "0";
+    salida << f.getDia() << "/";
+    if (f.getMes() < 10) salida << "0";
+    salida << f.getMes() << "/" << f.getAnio();
+}
+
+// Formato: usuario1;usuario2
+// Cada amistad está en los dos usuarios; se escribe una sola vez,
+// solo cuando el nombre del amigo va después alfabéticamente.
+bool RedSocial::guardarAmistades(const string& ruta) const {
+    ofstream archivo(ruta);
+    if (!archivo.is_open()) {
+        cout << "No se pudo escribir " << ruta << endl;
+        return false;
+    }
+    for (int i = 0; i < usuarios.getCantidad(); i++) {
+        Usuario* u = usuarios[i];
+        for (unsigned int j = 0; j < u->getCantidadAmigos(); j++) {
+            MedidorRecursos::contar();
+            Usuario* amigo = u->getAmigos()[j];
+            if (u->getNombreUsuario() < amigo->getNombreUsuario()) {
+                archivo << u->getNombreUsuario() << ";" << amigo->getNombreUsuario() << "\n";
+            }
+        }
+    }
+    archivo.close();
+    return true;
+}
+
+// Formato: emisor;receptor  (las solicitudes están guardadas en el receptor)
+bool RedSocial::guardarSolicitudes(const string& ruta) const {
+    ofstream archivo(ruta);
+    if (!archivo.is_open()) {
+        cout << "No se pudo escribir " << ruta << endl;
+        return false;
+    }
+    for (int i = 0; i < usuarios.getCantidad(); i++) {
+        Usuario* receptor = usuarios[i];
+        for (unsigned int j = 0; j < receptor->getCantidadSolicitudes(); j++) {
+            MedidorRecursos::contar();
+            archivo << receptor->getSolicitudesAmistad()[j]->getNombreUsuario() << ";"
+                    << receptor->getNombreUsuario() << "\n";
+        }
+    }
+    archivo.close();
+    return true;
+}
+
+// Formato: usuario;nombreAlbum;rutaFoto;dd/mm/aaaa;tamanio;likes
+bool RedSocial::guardarFotos(const string& ruta) const {
+    ofstream archivo(ruta);
+    if (!archivo.is_open()) {
+        cout << "No se pudo escribir " << ruta << endl;
+        return false;
+    }
+    for (int i = 0; i < usuarios.getCantidad(); i++) {
+        Usuario* u = usuarios[i];
+        for (unsigned int a = 0; a < u->getCantidadAlbumes(); a++) {
+            Album* album = u->getAlbumes()[a];
+            for (int f = 0; f < album->getFotos().getCantidad(); f++) {
+                MedidorRecursos::contar();
+                Foto* foto = album->getFotos()[f];
+                archivo << u->getNombreUsuario() << ";" << album->getNombre() << ";"
+                        << foto->getRutaArchivo() << ";";
+                escribirFechaSinHora(archivo, foto->getFechaPublicacion());
+                archivo << ";" << foto->getTamanioBytes() << ";" << foto->getLikes() << "\n";
+            }
+        }
+    }
+    archivo.close();
+    return true;
+}
+
+// Formato: emisor;receptor;dd/mm/aaaa hh:mm;visto(0/1);texto
+// La fecha se escribe con el operator<< de Fecha, que ya da ese formato.
+bool RedSocial::guardarMensajes(const string& ruta) const {
+    ofstream archivo(ruta);
+    if (!archivo.is_open()) {
+        cout << "No se pudo escribir " << ruta << endl;
+        return false;
+    }
+    for (int i = 0; i < mensajes.getCantidad(); i++) {
+        MedidorRecursos::contar();
+        Mensaje* m = mensajes[i];
+        archivo << m->getEmisor()->getNombreUsuario() << ";"
+                << m->getReceptor()->getNombreUsuario() << ";"
+                << m->getFechaenvio() << ";"
+                << (m->getVisto() ? "1" : "0") << ";"
+                << m->getContenido() << "\n";
+    }
+    archivo.close();
+    return true;
+}

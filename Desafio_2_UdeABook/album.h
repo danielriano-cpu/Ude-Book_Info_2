@@ -10,7 +10,7 @@ private:
     string nombre;
     string rutaAlmacenamiento;
     short privacidad;
-    Lista<Foto*> fotos;     // fotos del álbum (el arreglo dinámico lo maneja Lista)
+    Lista<Foto*> fotos;     // fotos del álbum
 
 public:
     Album(const string& titulo, const string& ruta, short estadoPrivacidad);    //Constructor

@@ -19,9 +19,8 @@ int leerOpcion() {
     return numero;
 }
 
-// ---------- Ordenamiento: merge sort genérico (lo usan V y VI) ----------
-// Ordena el arreglo de menor a mayor según esMenor(a, b), que devuelve true si 'a' va antes que 'b'.
-// Es estable (los "iguales" conservan su orden). Usa un arreglo auxiliar.
+// ---------- Merge sort (V y VI) ----------
+// esMenor(a, b) = true si a va antes que b. Es estable.
 
 // Mezcla dos mitades ya ordenadas
 template <typename T>
@@ -31,7 +30,7 @@ void mezclar(T* arreglo, T* auxiliar, int inicio, int medio, int fin, bool (*esM
     int k = inicio;        // posición donde se escribe en el auxiliar
     while (i <= medio && j <= fin) {
         MedidorRecursos::contar();
-        if (esMenor(arreglo[j], arreglo[i])) {   // el de la derecha es estrictamente menor
+        if (esMenor(arreglo[j], arreglo[i])) {
             auxiliar[k] = arreglo[j];
             j++;
         } else {                                 // si son iguales, gana el de la izquierda (estable)
@@ -50,7 +49,7 @@ void mezclar(T* arreglo, T* auxiliar, int inicio, int medio, int fin, bool (*esM
     }
 }
 
-// Parte el tramo en dos mitades, ordena cada una (recursión) y las mezcla
+// Divide, ordena cada mitad y mezcla
 template <typename T>
 void mergeSortRecursivo(T* arreglo, T* auxiliar, int inicio, int fin, bool (*esMenor)(T, T)) {
     if (inicio >= fin) return;               // un solo elemento ya está ordenado
@@ -71,10 +70,7 @@ void mergeSort(T* arreglo, int cantidad, bool (*esMenor)(T, T)) {
     delete[] auxiliar;
 }
 
-// Muestra las fotos de un álbum como un carrusel circular:
-// después de la última sigue la primera, y antes de la primera va la última.
-// Dar/quitar like: si el usuario no le ha dado like a la foto en esta visita, lo da;
-// si ya lo dio, lo quita. Se recuerda en un arreglo dinámico de bool (uno por foto).
+// Carrusel circular. yaDioLike[] guarda si ya dio like a cada foto en esta visita
 void mostrarCarrusel(Album* album) {
     int cantidad = album->getFotosGuardadas();
     if (cantidad == 0) {
@@ -132,17 +128,14 @@ void mostrarCarrusel(Album* album) {
 }
 
 // II. Visualización de mejores amigos (fotos de perfil)
-// Prioridad según amigos en común: <= 10 -> 1 ; 11 a 20 -> 2.5 ; > 20 -> 3.5.
-// Para no usar decimales se multiplican por 2: pesos 2, 5 y 7 (la proporción es la misma).
+// Prioridades 1, 2.5 y 3.5 multiplicadas por 2 para no usar decimales
 int pesoPorComunes(int comunes) {
     if (comunes > 20) return 7;
     if (comunes >= 11) return 5;
     return 2;
 }
 
-// Elige hasta 3 amigos al azar, con probabilidad proporcional a su peso, sin repetir:
-// es como una rifa donde cada amigo tiene tantas boletas como su peso. Los ya usados
-// (usado[i] == true) no participan, así el segundo grupo es distinto del primero.
+// Rifa: cada amigo tiene tantas boletas como su peso. El que sale ya no participa
 int elegirTres(int* pesos, bool* usado, int cantidad, int* elegidos, mt19937& generador) {
     int elegidosCount = 0;
     while (elegidosCount < 3) {
@@ -185,7 +178,7 @@ void mostrarMejoresAmigos(Usuario* sesion) {
         usado[i] = false;
     }
 
-    random_device semilla;               // semilla distinta en cada ejecución: sin patrón fijo
+    random_device semilla;               // semilla distinta cada vez
     mt19937 generador(semilla());
     int elegidos[3];
 
@@ -210,8 +203,7 @@ void mostrarMejoresAmigos(Usuario* sesion) {
     delete[] usado;
 }
 
-// ---------- Funciones del menú (una por opción) ----------
-// Reciben la red por referencia (sin copias) y el usuario con sesión iniciada
+// ---------- Funciones del menú ----------
 
 // III. Administrar amistades: enviar y aceptar solicitudes
 void administrarAmistades(RedSocial& red, Usuario* sesion) {
@@ -228,7 +220,7 @@ void administrarAmistades(RedSocial& red, Usuario* sesion) {
         getline(cin, nombre);
         Usuario* otro = red.buscarUsuario(nombre);
 
-        // Restricciones implícitas del enunciado
+        // Validaciones
         if (otro == nullptr) {
             cout << "Ese usuario no existe." << endl;
         } else if (otro == sesion) {
@@ -266,8 +258,7 @@ void administrarAmistades(RedSocial& red, Usuario* sesion) {
     }
 }
 
-// IV. Visitar perfil de un amigo: lista sus álbumes visibles (amigos o público)
-// y muestra las fotos del álbum elegido en modo carrusel circular.
+// IV. Visitar perfil de un amigo
 void visitarPerfil(RedSocial& red, Usuario* sesion) {
     string nombre;
     cout << "\nNombre de usuario del amigo: ";
@@ -283,8 +274,7 @@ void visitarPerfil(RedSocial& red, Usuario* sesion) {
         return;
     }
 
-    // Se listan solo los álbumes de amigos (1) o públicos (2); los privados (0) se saltan.
-    // visibles[] guarda la posición real de cada álbum mostrado, para poder elegirlo por número.
+    // Solo álbumes de amigos (1) o públicos (2). visibles[] guarda su posición real
     int cantidadAlbumes = amigo->getCantidadAlbumes();
     int* visibles = new int[cantidadAlbumes + 1];
     MedidorRecursos::sumarMemoria((cantidadAlbumes + 1) * sizeof(int));
@@ -318,9 +308,8 @@ void visitarPerfil(RedSocial& red, Usuario* sesion) {
     delete[] visibles;
 }
 
-// V. Ver sugerencias de amistad: K amigos de amigos ordenados por amigos en común
-// Criterio de orden para merge sort en las sugerencias: va primero la que tiene
-// más amigos en común (usa el operator> sobrecargado de Sugerencia).
+// V. Sugerencias de amistad
+// Criterio del merge sort: más amigos en común primero
 bool masAmigosEnComun(Sugerencia a, Sugerencia b) {
     return a > b;
 }
@@ -372,9 +361,8 @@ void verSugerencias(RedSocial& red, Usuario* sesion) {
     delete[] candidatos;
 }
 
-// VI. Administrar mensajes: enviar, leer nuevos y buscar por rango de fechas
-// Criterio de orden para merge sort: el mensaje enviado antes va primero.
-// Usa el operator< sobrecargado de Mensaje (compara las fechas de envío).
+// VI. Mensajes
+// Criterio del merge sort: el más antiguo primero
 bool mensajeMasAntiguo(Mensaje* a, Mensaje* b) {
     return *a < *b;
 }
@@ -485,7 +473,7 @@ void administrarMensajes(RedSocial& red, Usuario* sesion) {
 int main() {
     RedSocial red;
 
-    // I. Carga de datos (no aparece en el menú)
+    // I. Carga de datos
     MedidorRecursos::reiniciarIteraciones();
     if (!red.cargarDatos("datos/")) {
         cout << "No se pudieron cargar los datos." << endl;
@@ -494,65 +482,92 @@ int main() {
     cout << "Ude@Book: " << red.getCantidadUsuarios() << " usuarios cargados." << endl;
     MedidorRecursos::mostrarReporte("Carga de datos");
 
-    // II. Inicio de sesión
-    Usuario* sesion = nullptr;
-    while (sesion == nullptr) {
-        string nombre, clave;
-        cout << "\n===== INICIAR SESION =====" << endl;
-        cout << "Usuario: ";
-        getline(cin, nombre);
-        cout << "Clave: ";
-        getline(cin, clave);
-        if (!cin) return 0;                       // se cerró la entrada
+    // login -> menú -> cerrar sesión (guarda) -> login...
+    bool salirDelPrograma = false;
+    while (!salirDelPrograma) {
 
+        // II. Inicio de sesión
+        Usuario* sesion = nullptr;
+        while (sesion == nullptr) {
+            string nombre, clave;
+            cout << "\n===== INICIAR SESION =====" << endl;
+            cout << "Usuario (0 para salir del programa): ";
+            getline(cin, nombre);
+            if (!cin || nombre == "0") {              // se cerró la entrada o eligió salir
+                salirDelPrograma = true;
+                break;
+            }
+            cout << "Clave: ";
+            getline(cin, clave);
+            if (!cin) {
+                salirDelPrograma = true;
+                break;
+            }
+
+            MedidorRecursos::reiniciarIteraciones();
+            sesion = red.iniciarSesion(nombre, clave);
+            if (sesion == nullptr) {
+                cout << "Usuario o clave incorrectos." << endl;
+            } else {
+                cout << "\nBienvenido, " << sesion->getNombreUsuario() << "!" << endl;
+                mostrarMejoresAmigos(sesion);
+            }
+            MedidorRecursos::mostrarReporte("Inicio de sesion");
+        }
+        if (salirDelPrograma) break;
+
+        // Menú principal
+        int opcion = -1;
+        while (opcion != 0) {
+            cout << "\n========= MENU PRINCIPAL =========" << endl;
+            cout << "1. Administrar amistades" << endl;
+            cout << "2. Visitar perfil de un amigo" << endl;
+            cout << "3. Ver sugerencias de amistad" << endl;
+            cout << "4. Administrar mensajes" << endl;
+            cout << "0. Cerrar sesion" << endl;
+            cout << "Opcion: ";
+            opcion = leerOpcion();
+            if (!cin) {
+                salirDelPrograma = true;
+                break;
+            }
+
+            MedidorRecursos::reiniciarIteraciones();
+            switch (opcion) {
+            case 1:
+                administrarAmistades(red, sesion);
+                MedidorRecursos::mostrarReporte("Administrar amistades");
+                break;
+            case 2:
+                visitarPerfil(red, sesion);
+                MedidorRecursos::mostrarReporte("Visitar perfil de un amigo");
+                break;
+            case 3:
+                verSugerencias(red, sesion);
+                MedidorRecursos::mostrarReporte("Sugerencias de amistad");
+                break;
+            case 4:
+                administrarMensajes(red, sesion);
+                MedidorRecursos::mostrarReporte("Administrar mensajes");
+                break;
+            case 0:
+                cout << "Sesion cerrada." << endl;
+                break;
+            default:
+                cout << "Opcion no valida." << endl;
+            }
+        }
+
+        // Al cerrar sesión se guardan los cambios en los .txt
         MedidorRecursos::reiniciarIteraciones();
-        sesion = red.iniciarSesion(nombre, clave);
-        if (sesion == nullptr) {
-            cout << "Usuario o clave incorrectos." << endl;
+        if (red.guardarDatos("datos/")) {
+            cout << "Cambios guardados." << endl;
         } else {
-            cout << "\nBienvenido, " << sesion->getNombreUsuario() << "!" << endl;
-            mostrarMejoresAmigos(sesion);
+            cout << "No se pudieron guardar los cambios." << endl;
         }
-        MedidorRecursos::mostrarReporte("Inicio de sesion");
+        MedidorRecursos::mostrarReporte("Guardado de datos");
     }
 
-    // Menú principal
-    int opcion = -1;
-    while (opcion != 0) {
-        cout << "\n========= MENU PRINCIPAL =========" << endl;
-        cout << "1. Administrar amistades" << endl;
-        cout << "2. Visitar perfil de un amigo" << endl;
-        cout << "3. Ver sugerencias de amistad" << endl;
-        cout << "4. Administrar mensajes" << endl;
-        cout << "0. Salir" << endl;
-        cout << "Opcion: ";
-        opcion = leerOpcion();
-        if (!cin) break;
-
-        MedidorRecursos::reiniciarIteraciones();
-        switch (opcion) {
-        case 1:
-            administrarAmistades(red, sesion);
-            MedidorRecursos::mostrarReporte("Administrar amistades");
-            break;
-        case 2:
-            visitarPerfil(red, sesion);
-            MedidorRecursos::mostrarReporte("Visitar perfil de un amigo");
-            break;
-        case 3:
-            verSugerencias(red, sesion);
-            MedidorRecursos::mostrarReporte("Sugerencias de amistad");
-            break;
-        case 4:
-            administrarMensajes(red, sesion);
-            MedidorRecursos::mostrarReporte("Administrar mensajes");
-            break;
-        case 0:
-            cout << "Hasta pronto." << endl;
-            break;
-        default:
-            cout << "Opcion no valida." << endl;
-        }
-    }
+    cout << "Hasta pronto." << endl;
     return 0;
 }

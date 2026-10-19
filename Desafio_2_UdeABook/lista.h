@@ -25,14 +25,14 @@ public:
     Lista(const Lista&) = delete;
     Lista& operator=(const Lista&) = delete;
 
-    void agregar(const T& elemento);     // mete al final; si está lleno, crece primero
-    void insertarEn(int pos, const T& elemento);   // mete en la posición pos y corre los demás a la derecha
-    T& operator[](int pos) const;        // sobrecargamos el operador de acceso por posición: lista[i]
+    void agregar(const T& elemento);     //al final; si está lleno, crece primero
+    void insertarEn(int pos, const T& elemento);   // pos y corre los demás a la derecha
+    T& operator[](int pos) const;        // sobrecarga operador de acceso por posición: lista[i]
     int getCantidad() const;             // cuántos elementos hay
 
 };
 
-//Como un template solo son los planos que esperan ser usados, declaramos e implementamos en el mismo .h
+//Como un template solo son los planos, se implementa en el mismo .h
 
 //Constructor
 template <typename T>
@@ -43,8 +43,8 @@ Lista<T>::Lista(int capacidadInicial)
     cantidad = 0;
     capacidad = capacidadInicial;
     datos = new T[capacidad];
-    MedidorRecursos::sumarMemoria(capacidad * sizeof(T)); //tras haber pedido el arreglo con new T, se le avisa al medidor
-}                                                         //cuantos bytes pidió
+    MedidorRecursos::sumarMemoria(capacidad * sizeof(T));
+}
 
 //Destructor
 template <typename T>
@@ -85,8 +85,7 @@ void Lista<T>::agregar(const T& elemento)
     cantidad++;
 }
 
-// Inserta el elemento en la posición pos, corriendo una casilla a la derecha
-// todos los que estaban desde pos hasta el final (no deja huecos)
+// Inserta en pos corriendo los demás una casilla a la derecha
 template <typename T>
 void Lista<T>::insertarEn(int pos, const T& elemento) {
     if (pos < 0) pos = 0;

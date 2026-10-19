@@ -38,7 +38,7 @@ int Fecha::getAnio() const { return anio; }
 int Fecha::getHora() const { return hora; }
 int Fecha::getMinuto() const { return minuto; }
 
-//Unico metodo que tenemos para la clase Fecha
+// Valida una fecha
 bool Fecha::esValida(int d, int m, int a, int h, int min){
 
     // Año dentro de un rango razonable
@@ -68,7 +68,7 @@ bool Fecha::esValida(int d, int m, int a, int h, int min){
     return true;   // pasó todas las validaciones
 }
 
-//Sobrecarga del operador "<" el cual compara dos fechas desde lo más general a lo más especifico, y lo usamos para pordenar los mensajes por fecha de envío
+//Sobrecarga del operador "<". Compara año, mes, día, hora y minuto. lo usamos para pordenar los mensajes
 bool Fecha::operator<(const Fecha &otra) const {
     if (anio != otra.anio) return anio < otra.anio;
     if (mes  != otra.mes)  return mes  < otra.mes;
@@ -80,7 +80,7 @@ bool Fecha::operator<(const Fecha &otra) const {
 
 }
 
-//Sobrecarga del operador "==" el cual mira si dos fechas coinciden en todos sus campos y entonces son iguales
+//Sobrecarga del operador "==".Mira si dos fechas coinciden en todos sus campos y entonces son iguales
 bool Fecha::operator==(const Fecha &otra) const {
     return dia == otra.dia && mes == otra.mes && anio == otra.anio
            && hora == otra.hora && minuto == otra.minuto;
@@ -91,9 +91,9 @@ bool Fecha::operator<=(const Fecha &otra) const{
     return (*this < otra) || (*this == otra);
 }
 
-//funcion amiga que sobrecarga el operador "<<" el cual permite imprimir una fecha con cout << fecha, sin tener que implementar un metodo imprimeFecha()
+//funcion amiga que sobrecarga el operador "<<" // Imprime dd/mm/aaaa hh:mm (función amiga)
 std::ostream& operator<<(std::ostream& os, const Fecha &f){
-    // Se rellena con un 0 a la izquierda cuando el número tiene un solo dígito: 09/03/2026 07:05
+    // Rellena con 0: 09/03/2026 07:05
     if (f.dia < 10) os << "0";
     os << (int)f.dia << "/";
     if (f.mes < 10) os << "0";
@@ -115,8 +115,7 @@ int Fecha::diasDelMes(int m, int a) {
     return 31;
 }
 
-// Fecha y hora actuales. <chrono> (librería estándar de C++) da los segundos
-// transcurridos desde el 1/1/1970; a partir de ahí se cuentan años y meses completos.
+// Fecha actual con <chrono> (C++17): segundos desde 1970 -> años, meses, días
 Fecha Fecha::ahora() {
     long long segundos = std::chrono::duration_cast<std::chrono::seconds>(
                              std::chrono::system_clock::now().time_since_epoch()).count();
