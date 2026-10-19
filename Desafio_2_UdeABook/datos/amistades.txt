@@ -117,6 +117,7 @@ alejandro.florez22;daniela.cardona78
 alejandro.florez22;david.castro88
 alejandro.florez22;diana.diaz64
 alejandro.florez22;esteban.jimenez61
+alejandro.florez22;esteban.vargas65
 alejandro.florez22;felipe.arango28
 alejandro.florez22;felipe.henao26
 alejandro.florez22;isabella.mejia27
@@ -692,6 +693,7 @@ ana.cardona99;felipe.gomez79
 ana.cardona99;felipe.henao26
 ana.cardona99;ivan.herrera83
 ana.cardona99;kevin.diaz77
+ana.cardona99;manuela.vargas2
 ana.cardona99;maria.ramirez43
 ana.cardona99;mariana.ospina35
 ana.cardona99;mateo.restrepo12
@@ -922,6 +924,7 @@ ana.moreno44;valeria.rodriguez29
 ana.moreno92;camila.mejia66
 ana.moreno92;daniel
 ana.moreno92;emilio.garcia7
+ana.moreno92;esteban.vargas65
 ana.moreno92;felipe.henao26
 ana.moreno92;felipe.zapata56
 ana.moreno92;fernanda.diaz60
@@ -1392,11 +1395,13 @@ andres.mejia32;daniel
 andres.mejia32;esteban.rivera16
 andres.mejia32;felipe.henao26
 andres.mejia32;fernanda.henao68
+andres.mejia32;fernanda.valencia57
 andres.mejia32;gabriela.restrepo36
 andres.mejia32;jeronimo
 andres.mejia32;julian.florez81
 andres.mejia32;kevin.diaz77
 andres.mejia32;manuela.garcia70
+andres.mejia32;manuela.vargas2
 andres.mejia32;maria.florez95
 andres.mejia32;maria.mejia69
 andres.mejia32;maria.moreno44
@@ -1464,6 +1469,7 @@ andres.quintero78;juan.quintero12
 andres.quintero78;kevin.castro31
 andres.quintero78;lucia.rojas44
 andres.quintero78;mateo.ruiz3
+andres.quintero78;natalia.rojas28
 andres.quintero78;natalia.torres70
 andres.quintero78;pedro.osorio80
 andres.quintero78;pedro.torres94
@@ -1836,6 +1842,7 @@ camila.osorio25;paula.mejia67
 camila.osorio25;pedro.torres94
 camila.osorio25;santiago.gonzalez11
 camila.osorio25;sara.diaz3
+camila.osorio25;sara.florez33
 camila.osorio25;sofia.zapata25
 camila.osorio25;valentina.henao12
 camila.osorio25;valentina.henao66
@@ -3534,6 +3541,7 @@ david.castro88;emilio.garcia7
 david.castro88;emilio.ruiz45
 david.castro88;felipe.henao26
 david.castro88;gabriela.diaz82
+david.castro88;isabella.rojas81
 david.castro88;jimena.castro82
 david.castro88;juan.quintero12
 david.castro88;julian.moreno20
@@ -5323,12 +5331,20 @@ esteban.valencia93;paula.quintero23
 esteban.valencia93;sebastian.arango67
 esteban.valencia93;sebastian.garcia42
 esteban.valencia93;valentina.vargas9
+esteban.vargas65;fernanda.castro14
 esteban.vargas65;isabella.henao18
+esteban.vargas65;isabella.restrepo40
 esteban.vargas65;ivan.rodriguez84
 esteban.vargas65;julian.ruiz82
 esteban.vargas65;lucia.rivera83
+esteban.vargas65;lucia.rojas44
 esteban.vargas65;manuela.garcia70
+esteban.vargas65;maria.cardona92
 esteban.vargas65;mariana.gonzalez20
+esteban.vargas65;mariana.mejia48
+esteban.vargas65;mariana.osorio11
+esteban.vargas65;miguel.arango6
+esteban.vargas65;paula.mejia67
 esteban.vargas65;santiago.diaz38
 esteban.vargas65;santiago.florez91
 esteban.vargas65;sara.martinez80
@@ -5336,6 +5352,7 @@ esteban.vargas65;sebastian.mejia36
 esteban.vargas65;sebastian.ruiz8
 esteban.vargas65;sebastian.zapata39
 esteban.vargas65;valentina.diaz89
+esteban.vargas65;valeria.arango47
 esteban.vargas90;felipe.ramirez12
 esteban.vargas90;gabriela.moreno99
 esteban.vargas90;jimena.florez4
@@ -5372,6 +5389,7 @@ felipe.arango28;jimena.castro82
 felipe.arango28;juan.ruiz92
 felipe.arango28;kevin.martinez71
 felipe.arango28;manuela.ramirez15
+felipe.arango28;manuela.vargas2
 felipe.arango28;miguel.torres40
 felipe.arango28;natalia.gomez27
 felipe.arango28;natalia.rojas28
@@ -5851,11 +5869,13 @@ felipe.vargas35;tomas.cardona7
 felipe.vargas35;valentina.herrera99
 felipe.vargas35;valentina.vargas9
 felipe.vargas35;valeria.lopez9
+felipe.zapata56;fernanda.valencia57
 felipe.zapata56;gabriela.diaz82
 felipe.zapata56;gabriela.jimenez67
 felipe.zapata56;gabriela.ospina42
 felipe.zapata56;gabriela.zapata19
 felipe.zapata56;isabella.mejia27
+felipe.zapata56;isabella.rojas81
 felipe.zapata56;jeronimo
 felipe.zapata56;jimena.castro82
 felipe.zapata56;jimena.ramirez99
@@ -6324,6 +6344,9 @@ fernanda.valencia57;jorge.gonzalez23
 fernanda.valencia57;julian.gonzalez64
 fernanda.valencia57;lucia.mejia76
 fernanda.valencia57;maria.rivera99
+fernanda.valencia57;mariana.mejia48
+fernanda.valencia57;mariana.osorio11
+fernanda.valencia57;natalia.gomez27
 fernanda.valencia57;natalia.moreno19
 fernanda.valencia57;nicolas.gonzalez24
 fernanda.valencia57;nicolas.vargas70
@@ -6782,7 +6805,9 @@ isabella.lopez79;valeria.jimenez17
 isabella.mejia27;jimena.castro82
 isabella.mejia27;juan.osorio70
 isabella.mejia27;lucia.jimenez99
+isabella.mejia27;manuela.vargas2
 isabella.mejia27;natalia.ramirez34
+isabella.mejia27;natalia.rojas28
 isabella.mejia27;natalia.torres57
 isabella.mejia27;natalia.torres70
 isabella.mejia27;pedro.torres94
@@ -6824,6 +6849,7 @@ isabella.quintero2;mariana.ramirez6
 isabella.quintero2;paula.arango52
 isabella.quintero2;tomas.moreno9
 isabella.quintero2;valentina.diaz89
+isabella.restrepo40;isabella.rojas81
 isabella.restrepo40;jimena.castro82
 isabella.restrepo40;laura.ramirez96
 isabella.restrepo40;lucia.valencia89
@@ -6833,6 +6859,7 @@ isabella.restrepo40;mariana.mejia48
 isabella.restrepo40;mariana.rodriguez27
 isabella.restrepo40;natalia.castro44
 isabella.restrepo40;natalia.gomez27
+isabella.restrepo40;natalia.rojas28
 isabella.restrepo40;natalia.torres57
 isabella.restrepo40;santiago.gonzalez11
 isabella.restrepo40;sara.martinez80
@@ -6861,17 +6888,22 @@ isabella.rojas51;pedro.gomez53
 isabella.rojas51;sara.florez28
 isabella.rojas51;sebastian.mejia36
 isabella.rojas51;sofia.ruiz19
+isabella.rojas81;jimena.castro82
+isabella.rojas81;jimena.martinez57
 isabella.rojas81;julian.rojas87
 isabella.rojas81;julian.zapata26
 isabella.rojas81;kevin.gomez84
 isabella.rojas81;luisa.lopez80
+isabella.rojas81;natalia.torres57
 isabella.rojas81;nicolas.quintero26
+isabella.rojas81;paula.mejia67
 isabella.rojas81;pedro.gonzalez59
 isabella.rojas81;santiago.martinez90
 isabella.rojas81;santiago.torres57
 isabella.rojas81;sara.osorio68
 isabella.rojas81;sebastian.mejia80
 isabella.rojas81;sofia.rojas19
+isabella.rojas81;valeria.moreno3
 isabella.sanchez77;julian.vargas80
 isabella.sanchez77;laura.perez7
 isabella.sanchez77;manuela.castro95
@@ -7253,6 +7285,7 @@ jimena.castro82;pedro.gonzalez59
 jimena.castro82;pedro.torres94
 jimena.castro82;santiago.gonzalez11
 jimena.castro82;sara.cardona15
+jimena.castro82;sara.florez33
 jimena.castro82;sofia.torres90
 jimena.castro82;tomas.castro13
 jimena.castro82;valentina.herrera99
@@ -7400,6 +7433,7 @@ jimena.osorio62;luisa.castro23
 jimena.osorio62;luisa.moreno75
 jimena.osorio62;manuela.cardona56
 jimena.osorio62;mariana.vargas9
+jimena.osorio62;natalia.rojas28
 jimena.osorio62;natalia.torres70
 jimena.osorio62;pedro.torres94
 jimena.osorio62;santiago.gonzalez11
@@ -7946,6 +7980,7 @@ juan.osorio70;tomas.zapata73
 juan.quintero12;manuela.gonzalez58
 juan.quintero12;maria.cardona92
 juan.quintero12;mariana.mejia48
+juan.quintero12;natalia.rojas28
 juan.quintero12;natalia.torres70
 juan.quintero12;nicolas.diaz42
 juan.quintero12;paula.arango18
@@ -9343,6 +9378,7 @@ manuela.sanchez91;santiago.sanchez20
 manuela.sanchez91;sebastian.diaz1
 manuela.sanchez91;sebastian.jimenez43
 manuela.sanchez91;valeria.martinez83
+manuela.vargas2;mariana.mejia48
 manuela.vargas2;miguel.perez50
 manuela.vargas2;paula.osorio63
 manuela.vargas2;paula.quintero23
@@ -9352,6 +9388,7 @@ manuela.vargas2;sebastian.arango5
 manuela.vargas2;sebastian.zapata39
 manuela.vargas2;tomas.torres55
 manuela.vargas2;valeria.herrera59
+manuela.vargas2;valeria.moreno3
 maria.cardona92;mariana.mejia48
 maria.cardona92;mateo.florez57
 maria.cardona92;natalia.torres70
@@ -10067,6 +10104,7 @@ natalia.gomez27;natalia.torres57
 natalia.gomez27;nicolas.restrepo37
 natalia.gomez27;paula.castro49
 natalia.gomez27;santiago.rodriguez18
+natalia.gomez27;sara.florez33
 natalia.gomez27;valentina.diaz89
 natalia.gomez27;valentina.henao12
 natalia.gomez27;valentina.moreno61
@@ -10133,10 +10171,13 @@ natalia.rodriguez85;sofia.moreno54
 natalia.rodriguez85;valeria.herrera18
 natalia.rojas28;nicolas.vargas34
 natalia.rojas28;paula.martinez96
+natalia.rojas28;pedro.torres94
+natalia.rojas28;santiago.gonzalez11
 natalia.rojas28;santiago.rodriguez18
 natalia.rojas28;santiago.rojas47
 natalia.rojas28;sara.diaz3
 natalia.rojas28;sebastian.martinez62
+natalia.rojas28;sebastian.restrepo28
 natalia.rojas28;sofia.rodriguez34
 natalia.rojas28;sofia.zapata25
 natalia.rojas28;valentina.osorio75
@@ -10489,6 +10530,7 @@ santiago.florez91;valentina.gomez74
 santiago.gomez14;santiago.mejia73
 santiago.gomez14;sara.moreno79
 santiago.gomez14;sebastian.martinez62
+santiago.gonzalez11;sara.florez33
 santiago.gonzalez11;sebastian.jimenez43
 santiago.gonzalez11;tomas.gomez39
 santiago.gonzalez11;valentina.henao12
@@ -10570,6 +10612,7 @@ sara.diaz62;valeria.rivera88
 sara.florez28;tomas.jimenez70
 sara.florez28;tomas.moreno9
 sara.florez28;tomas.quintero97
+sara.florez33;valeria.moreno3
 sara.gomez23;sebastian.florez60
 sara.gomez23;sofia.zapata25
 sara.gomez23;tomas.vargas35

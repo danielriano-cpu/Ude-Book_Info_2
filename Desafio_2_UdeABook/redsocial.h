@@ -5,6 +5,8 @@
 #include "usuario.h"
 #include "mensaje.h"
 #include "album.h"
+#include "sugerencia.h"
+
 using namespace std;
 
 class RedSocial
@@ -16,7 +18,6 @@ private:
     // Auxiliares para la carga de archivos
     static int partirLinea(const string& linea, string partes[], int maxPartes);
     static int textoAEntero(const string& texto);
-    static Fecha textoAFecha(const string& texto);
 
     // Carga de cada archivo (las llama cargarDatos)
     bool cargarUsuarios(const string& ruta);
@@ -31,6 +32,9 @@ private:
 
     // Busca un álbum por nombre dentro de los álbumes de un usuario
     static Album* buscarAlbum(Usuario* dueno, const string& nombreAlbum);
+
+    // Posición de un usuario en la lista ordenada (búsqueda binaria), o -1 si no está
+    int indiceDe(const string& nombre) const;
 
 public:
 
@@ -51,6 +55,15 @@ public:
 
     // II. Inicio de sesión: devuelve el usuario si nombre y clave coinciden, o nullptr
     Usuario* iniciarSesion(const string& nombre, const string& clave) const;
+
+    // VI
+    bool enviarMensaje(Usuario* emisor, Usuario* receptor, const string& texto);
+
+    // V
+    int calcularCandidatos(Usuario* u, Sugerencia* candidatos) const;
+
+    // Convierte "dd/mm/aaaa" o "dd/mm/aaaa hh:mm" en Fecha (lo usan la carga y el menú)
+    static Fecha textoAFecha(const string& texto);
 
     // Carga todos los .txt de la carpeta indicada (ej: "datos/")
     bool cargarDatos(const string& carpeta);
